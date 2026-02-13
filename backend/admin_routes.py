@@ -9,6 +9,7 @@ import base64
 from typing import Optional
 
 from utils.vectorize_layout import process_layout_map
+from utils.metadata_extractor import extract_layout_metadata
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -48,6 +49,19 @@ async def digitize_layout(file: UploadFile = File(...)):
         "area_px": area_px,
         "preview_image": f"data:image/jpeg;base64,{img_base64}",
         "message": "Vectorization successful"
+    }
+
+@router.post("/analyze-layout")
+async def analyze_layout(file: UploadFile = File(...)):
+    """
+    AI Parsing: Extract metadata (Name, Area, ID) from map image text.
+    """
+    contents = await file.read()
+    metadata = extract_layout_metadata(contents)
+    
+    return {
+        "message": "Analysis complete",
+        "data": metadata
     }
 
 @router.post("/upload-layout")

@@ -216,6 +216,45 @@ function Upload({ onNavigate }) {
                             </div>
                         </div>
 
+                        {/* ADVANCED INTELLIGENCE DASHBOARD (Phase 2) */}
+                        {result.change_detection.financial_impact && (
+                            <div className="glass-card" style={{ marginBottom: 20, padding: 16, background: 'rgba(30, 41, 59, 0.7)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                <h4 style={{ margin: '0 0 16px 0', color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span>🧠</span> Advanced Land Intelligence
+                                </h4>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                                    {/* Industrial Health */}
+                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 8 }}>
+                                        <div style={{ fontSize: 12, color: '#94a3b8' }}>Industrial Health Index</div>
+                                        <div style={{ fontSize: 24, fontWeight: 800, color: result.change_detection.industrial_health_index > 75 ? '#22c55e' : result.change_detection.industrial_health_index > 40 ? '#facc15' : '#ef4444' }}>
+                                            {result.change_detection.industrial_health_index}/100
+                                        </div>
+                                    </div>
+                                    {/* Classification */}
+                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 8 }}>
+                                        <div style={{ fontSize: 12, color: '#94a3b8' }}>Land Classification</div>
+                                        <div style={{ fontSize: 16, fontWeight: 600, color: '#e2e8f0', marginTop: 6 }}>
+                                            {result.change_detection.status.replace(/_/g, ' ').toUpperCase()}
+                                        </div>
+                                    </div>
+                                    {/* Financial Loss */}
+                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 8 }}>
+                                        <div style={{ fontSize: 12, color: '#94a3b8' }}>Est. Revenue Leakage</div>
+                                        <div style={{ fontSize: 18, fontWeight: 700, color: '#ef4444' }}>
+                                            ₹{result.change_detection.financial_impact.estimated_revenue_leakage.toLocaleString()}
+                                        </div>
+                                    </div>
+                                    {/* Recoverable Penalty */}
+                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 8 }}>
+                                        <div style={{ fontSize: 12, color: '#94a3b8' }}>Recoverable Penalty</div>
+                                        <div style={{ fontSize: 18, fontWeight: 700, color: '#22c55e' }}>
+                                            ₹{result.change_detection.financial_impact.recoverable_penalty.toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Result Images */}
                         <div className="analysis-grid">
                             <div className="analysis-image-card">

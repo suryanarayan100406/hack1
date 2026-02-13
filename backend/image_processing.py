@@ -95,7 +95,7 @@ def detect_changes(ref_path: str, sat_path: str, project_id: str) -> dict:
         sh, sw = sat_analysis["built_up_mask"].shape
         built_up_full[by:by+sh, bx:bx+sw] = sat_analysis["built_up_mask"]
         
-    compliance_ metrics = compliance.compute_encroachment(plot_mask, built_up_full)
+    compliance_metrics = compliance.compute_encroachment(plot_mask, built_up_full)
     
     # --- PHASE 6: CLASSIFICATION ---
     classification = compliance.classify_land(compliance_metrics)

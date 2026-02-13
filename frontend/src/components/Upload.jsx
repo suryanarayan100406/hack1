@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 function Upload({ onNavigate }) {
     const [refImage, setRefImage] = useState(null)
@@ -9,8 +9,34 @@ function Upload({ onNavigate }) {
     const [uploading, setUploading] = useState(false)
     const [result, setResult] = useState(null)
     const [dragOver, setDragOver] = useState(null)
+
+    // Registry State
+    const [uploadMode, setUploadMode] = useState('registry') // 'registry' | 'manual'
+    const [layouts, setLayouts] = useState([])
+    const [selectedPlotId, setSelectedPlotId] = useState('')
+
     const refInput = useRef(null)
     const satInput = useRef(null)
+
+    // Load Registry on Mount
+    useEffect(() => {
+        fetch('/api/official-layouts')
+            .then(res => res.json())
+            .then(data => {
+                console.log("Registry Data:", data)
+                if (Array.isArray(data)) {
+                    setLayouts(data)
+                    if (data.length > 0) setSelectedPlotId(data[0].id)
+                } else {
+                    console.error("Registry data is not an array:", data)
+                    setLayouts([])
+                }
+            })
+            .catch(err => {
+                console.error("Failed to load registry", err)
+                setLayouts([])
+            })
+    }, [])
 
     const handleFile = (file, type) => {
         if (!file) return
@@ -37,26 +63,49 @@ function Upload({ onNavigate }) {
     }
 
     const handleSubmit = async () => {
-        if (!refImage || !satImage) return
+        // Validation
+        if (!satImage) return
+        if (uploadMode === 'manual' && !refImage) return
+        if (uploadMode === 'registry' && !selectedPlotId) return
+
         setUploading(true)
         setResult(null)
 
         try {
             const formData = new FormData()
-            formData.append('reference', refImage)
             formData.append('satellite', satImage)
             if (projectName) formData.append('project_name', projectName)
 
+            if (uploadMode === 'registry') {
+                formData.append('plot_id', selectedPlotId)
+            } else {
+                formData.append('reference', refImage)
+            }
+
             const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
+            if (!uploadRes.ok) throw new Error(await uploadRes.text())
+
             const uploadData = await uploadRes.json()
 
             if (uploadData.project?.id) {
                 const analyzeRes = await fetch(`/api/analyze/${uploadData.project.id}`, { method: 'POST' })
+                if (!analyzeRes.ok) throw new Error(await analyzeRes.text())
                 const analyzeData = await analyzeRes.json()
                 setResult(analyzeData)
             }
         } catch (err) {
-            setResult({ error: 'Analysis failed. Please try again.' })
+            console.error(err)
+            // Extract error message from JSON if possible
+            let msg = 'Analysis failed.'
+            try {
+                if (err.message.includes('{')) {
+                    const parsed = JSON.parse(err.message)
+                    msg = parsed.detail || msg
+                } else {
+                    msg = err.message
+                }
+            } catch (e) { }
+            setResult({ error: msg })
         }
 
         setUploading(false)
@@ -66,7 +115,7 @@ function Upload({ onNavigate }) {
         <div>
             <div className="page-header">
                 <h2>📤 Upload & Analyze</h2>
-                <p>Upload a reference allotment map and a satellite/drone image to detect changes</p>
+                <p>Compare satellite imagery against official CSIDC land records.</p>
             </div>
 
             <div className="upload-page" style={{ marginTop: 24 }}>
@@ -83,39 +132,94 @@ function Upload({ onNavigate }) {
                     />
                 </div>
 
+                {/* Mode Switcher */}
+                <div className="glass-card" style={{ marginBottom: 24, padding: 4, display: 'inline-flex', gap: 4, background: 'rgba(30, 41, 59, 0.5)' }}>
+                    <button
+                        onClick={() => setUploadMode('registry')}
+                        style={{
+                            padding: '8px 16px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                            background: uploadMode === 'registry' ? '#3b82f6' : 'transparent',
+                            color: uploadMode === 'registry' ? 'white' : '#94a3b8',
+                            fontWeight: 600
+                        }}
+                    >
+                        🏛️ Official Registry
+                    </button>
+                    <button
+                        onClick={() => setUploadMode('manual')}
+                        style={{
+                            padding: '8px 16px', borderRadius: 6, border: 'none', cursor: 'pointer',
+                            background: uploadMode === 'manual' ? '#3b82f6' : 'transparent',
+                            color: uploadMode === 'manual' ? 'white' : '#94a3b8',
+                            fontWeight: 600
+                        }}
+                    >
+                        📤 Manual Upload
+                    </button>
+                </div>
+
                 {/* Upload Zones */}
                 <div className="upload-preview">
-                    {/* Reference Map */}
-                    <div className="preview-card">
-                        <div
-                            className={`upload-zone ${dragOver === 'ref' ? 'drag-over' : ''}`}
-                            onClick={() => refInput.current?.click()}
-                            onDragOver={(e) => { e.preventDefault(); setDragOver('ref') }}
-                            onDragLeave={() => setDragOver(null)}
-                            onDrop={(e) => handleDrop(e, 'ref')}
-                            style={{ padding: refPreview ? '16px' : '48px' }}
-                        >
-                            {refPreview ? (
-                                <img src={refPreview} alt="Reference Map" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8 }} />
-                            ) : (
-                                <>
-                                    <div className="upload-icon">🗺️</div>
-                                    <h3>Reference Map</h3>
-                                    <p>Drop the original allotment map here or click to browse</p>
-                                </>
+
+                    {/* Reference Map Section */}
+                    {uploadMode === 'registry' ? (
+                        <div className="preview-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <div className="upload-icon">🗺️</div>
+                            <h3>Official Land Record</h3>
+                            <p style={{ marginBottom: 16 }}>Select a plot from the CSIDC database</p>
+
+                            <select
+                                className="form-input"
+                                value={selectedPlotId}
+                                onChange={(e) => setSelectedPlotId(e.target.value)}
+                                style={{ width: '100%' }}
+                            >
+                                <option value="" disabled>-- Select Industrial Area --</option>
+                                {layouts.map(l => (
+                                    <option key={l.id} value={l.id}>
+                                        {l.id} - {l.name}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {selectedPlotId && (
+                                <div style={{ marginTop: 12, fontSize: 13, color: '#22c55e', background: 'rgba(34, 197, 94, 0.1)', padding: 8, borderRadius: 4 }}>
+                                    ✅ Record Found: {layouts.find(l => l.id === selectedPlotId)?.approved_area_sqm.toLocaleString()} sqm
+                                </div>
                             )}
                         </div>
-                        <input
-                            type="file"
-                            ref={refInput}
-                            style={{ display: 'none' }}
-                            accept="image/*"
-                            onChange={(e) => handleFile(e.target.files[0], 'ref')}
-                        />
-                        <div className="label" style={{ marginTop: 8 }}>📌 Reference / Allotment Map</div>
-                    </div>
+                    ) : (
+                        <div className="preview-card">
+                            <div
+                                className={`upload-zone ${dragOver === 'ref' ? 'drag-over' : ''}`}
+                                onClick={() => refInput.current?.click()}
+                                onDragOver={(e) => { e.preventDefault(); setDragOver('ref') }}
+                                onDragLeave={() => setDragOver(null)}
+                                onDrop={(e) => handleDrop(e, 'ref')}
+                                style={{ padding: refPreview ? '16px' : '48px' }}
+                            >
+                                {refPreview ? (
+                                    <img src={refPreview} alt="Reference Map" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8 }} />
+                                ) : (
+                                    <>
+                                        <div className="upload-icon">🗺️</div>
+                                        <h3>Reference Map</h3>
+                                        <p>Drop the original allotment map here</p>
+                                    </>
+                                )}
+                            </div>
+                            <input
+                                type="file"
+                                ref={refInput}
+                                style={{ display: 'none' }}
+                                accept="image/*"
+                                onChange={(e) => handleFile(e.target.files[0], 'ref')}
+                            />
+                            <div className="label" style={{ marginTop: 8 }}>📌 Manual Reference Map</div>
+                        </div>
+                    )}
 
-                    {/* Satellite Image */}
+                    {/* Satellite Image (Always Visible) */}
                     <div className="preview-card">
                         <div
                             className={`upload-zone ${dragOver === 'sat' ? 'drag-over' : ''}`}
@@ -131,7 +235,7 @@ function Upload({ onNavigate }) {
                                 <>
                                     <div className="upload-icon">🛰️</div>
                                     <h3>Current Image</h3>
-                                    <p>Drop the latest satellite or drone image here or click to browse</p>
+                                    <p>Drop the latest satellite or drone image here</p>
                                 </>
                             )}
                         </div>
@@ -150,11 +254,12 @@ function Upload({ onNavigate }) {
                 <div style={{ textAlign: 'center', marginTop: 24 }}>
                     <button
                         className="btn-primary"
-                        disabled={!refImage || !satImage || uploading}
+                        disabled={!satImage || (uploadMode === 'manual' && !refImage) || (uploadMode === 'registry' && !selectedPlotId) || uploading}
                         onClick={handleSubmit}
                     >
                         {uploading ? '⏳ Analyzing...' : '🔍 Run Change Detection'}
                     </button>
+                    {uploading && <p style={{ marginTop: 8, color: '#94a3b8', fontSize: 13 }}>Comparing {uploadMode === 'registry' ? 'Official Record' : 'Reference Map'} vs Satellite...</p>}
                 </div>
 
                 {/* Results */}

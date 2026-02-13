@@ -5,3 +5,4 @@ opencv-python-headless==4.9.0.80
 numpy==1.26.3
 Pillow==10.2.0
 pytesseract
+shapely

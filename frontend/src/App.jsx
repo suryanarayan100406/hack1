@@ -6,6 +6,7 @@ import Upload from './components/Upload'
 import Analysis from './components/Analysis'
 import Reports from './components/Reports'
 import Alerts from './components/Alerts'
+import AdminPanel from './components/AdminPanel'
 
 function App() {
     const [activePage, setActivePage] = useState('dashboard')
@@ -18,6 +19,7 @@ function App() {
             case 'analysis': return <Analysis />
             case 'reports': return <Reports />
             case 'alerts': return <Alerts />
+            case 'admin': return <AdminPanel onNavigate={setActivePage} />
             default: return <Dashboard onNavigate={setActivePage} />
         }
     }

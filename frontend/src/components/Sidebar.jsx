@@ -5,6 +5,7 @@ const navItems = [
     { id: 'analysis', label: 'Analysis Results', icon: '🔍' },
     { id: 'reports', label: 'Compliance Reports', icon: '📋' },
     { id: 'alerts', label: 'Alerts', icon: '🔔' },
+    { id: 'admin', label: 'Admin Panel', icon: '🛠️' },
 ]
 
 function Sidebar({ activePage, onNavigate }) {

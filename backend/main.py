@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 
 from routes import router
+from admin_routes import router as admin_router
 
 app = FastAPI(
     title="CSIDC Land Sentinel API",
@@ -36,6 +37,7 @@ app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 # Register API routes
 app.include_router(router)
+app.include_router(admin_router)
 
 
 @app.get("/")

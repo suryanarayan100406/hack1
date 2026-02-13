@@ -6,7 +6,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Optional
 
-from image_processing import create_project, run_analysis, list_projects
+from image_processing import create_project, run_analysis, list_projects, get_official_layouts
 from demo_data import (
     INDUSTRIAL_AREAS,
     DEMO_PLOTS,
@@ -93,22 +93,39 @@ async def get_stats():
     return get_dashboard_stats()
 
 
+# ── Registry Endpoints ───────────────────────────────────────────
+
+@router.get("/official-layouts")
+async def get_layouts():
+    """List official layouts from registry."""
+    return get_official_layouts()
+
+
 # ── Image Analysis Endpoints ─────────────────────────────────────
 
 @router.post("/upload")
 async def upload_images(
-    reference: UploadFile = File(...),
+    reference: Optional[UploadFile] = File(None),
     satellite: UploadFile = File(...),
     project_name: Optional[str] = Form(None),
+    plot_id: Optional[str] = Form(None),
 ):
-    """Upload reference map and satellite image for analysis."""
-    ref_bytes = await reference.read()
+    """
+    Upload satellite image and either reference map OR plot_id.
+    """
+    if not reference and not plot_id:
+        raise HTTPException(status_code=400, detail="Either reference map or plot_id is required")
+
+    ref_bytes = await reference.read() if reference else None
+    ref_filename = reference.filename if reference else None
+    
     sat_bytes = await satellite.read()
     
     project = create_project(
-        ref_bytes, reference.filename,
+        ref_bytes, ref_filename,
         sat_bytes, satellite.filename,
         project_name,
+        plot_id
     )
     
     return {

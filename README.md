@@ -1,95 +1,57 @@
 # 🛰️ CSIDC Land Sentinel
+**Advanced Industrial Land Intelligence & Financial Compliance System**
 
-**Automated Monitoring and Compliance of Industrial Land Allotments for Financial Efficiency**
+An AI-powered satellite monitoring platform that automates boundary compliance, legal risk assessment, and financial revenue maximization for industrial allotments.
 
-An AI-powered satellite monitoring system that enables CSIDC to detect boundary violations, encroachments, and unauthorized construction on industrial land parcels — reducing reliance on expensive drone surveys.
+![Dashboard](https://via.placeholder.com/800x400?text=CSIDC+Land+Sentinel+Dashboard)
 
-## ✨ Key Features
+## 🚀 Key Innovations (12-Phase System)
 
-- **📊 Dashboard** — Real-time KPI cards, area-wise compliance charts, and alert feeds
-- **🗺️ Interactive Map** — Leaflet-based satellite map with GeoJSON plot boundary overlays (ESRI satellite tiles)
-- **📤 Upload & Analyze** — Drag-drop upload of reference maps + satellite images for automated change detection
-- **🔍 Change Detection** — OpenCV-powered pixel-diff analysis with heatmaps, contour detection, and annotated overlays
-- **📋 Compliance Reports** — Filterable table with compliance scores, CSV export, and per-plot status
-- **🔔 Alert System** — Severity-based violation alerts with acknowledge/dismiss workflow
-- **🎯 Demo Mode** — Pre-loaded CSIDC industrial areas (Urla, Siltara, Borai, Bhilai, Korba) with real coordinates
+### 🧠 Phase 1-4: Advanced Intelligence Engine
+- **Raster-to-Vector**: Reconstructs digital plot boundaries from static maps using HSV segmentation and contour approximation.
+- **OCR Integration**: Extracts plot IDs from map scans (Stubbed/Designed).
+- **Georeferencing**: Maps pixel coordinates to real-world Lat/Long.
+- **Satellite Analysis**: Detects built-up structures using adaptive thresholding and morphological filtering.
+
+### ⚖️ Phase 5-7: Compliance & Risk Engine
+- **True Encroachment Logic**: `Violation = Built-up Area AND (NOT Approved Boundary)`.
+- **Strict ROI Alignment**: Auto-crops images to approved bounding boxes to prevent false positives.
+- **Smart Classification**: Auto-labels land as *Vacant*, *Under Construction*, *Fully Constructed*, or *Encroached*.
+- **Risk Scoring**: Assigns `CRITICAL`, `MAJOR`, `MODERATE`, or `LOW` risk severity based on % deviation.
+
+### 💰 Phase 8-10: Economics & Health Engine
+- **Financial Impact Estimator**: Calculates `Estimated Revenue Leakage` (from vacancy) and `Recoverable Penalties` (from encroachment).
+- **Industrial Health Index**: A composite score (0-100) tracking utilization efficiency and compliance.
+
+### 📋 Phase 11-12: Governance & Reporting
+- **Decision Support**: Automated administrative recommendations (e.g., "Issue Notice", "Legal Escalation").
+- **Audit Trails**: One-click download of immutable JSON audit logs.
 
 ## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite, React-Leaflet, Recharts |
-| Backend | Python 3, FastAPI, OpenCV, NumPy, Pillow |
-| Maps | Leaflet + ESRI World Imagery + OpenStreetMap |
-| Design | Dark glassmorphism CSS, Inter font, responsive |
+- **Core**: Python 3.10+, FastAPI
+- **Computer Vision**: OpenCV (Structural Analysis, HSV, Contours)
+- **Frontend**: React 18, Vite, Recharts, Leaflet Maps
+- **Architecture**: Modular Core (`backend/core/`) + Service Orchestrator
 
 ## 🚀 Quick Start
 
-### Backend
+### 1. Backend
 ```bash
 cd backend
+# Install dependencies (ensure cv2, numpy, fastapi, uvicorn are present)
 pip install -r requirements.txt
+# Run the Advanced Intelligence Server
 python -m uvicorn main:app --reload --port 8000
 ```
 
-### Frontend
+### 2. Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+Access at [http://localhost:5173](http://localhost:5173)
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
-## 📁 Project Structure
-
-```
-├── backend/
-│   ├── main.py                 # FastAPI entry point
-│   ├── routes.py               # API endpoints
-│   ├── image_processing.py     # OpenCV change detection engine
-│   ├── demo_data.py            # Pre-loaded CSIDC industrial area data
-│   └── requirements.txt        # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx             # Root component with page routing
-│   │   ├── index.css           # Full design system (dark glassmorphism)
-│   │   ├── components/
-│   │   │   ├── Dashboard.jsx   # KPI cards, charts, alerts feed
-│   │   │   ├── MapView.jsx     # Interactive Leaflet map with GeoJSON overlays
-│   │   │   ├── Upload.jsx      # Drag-drop image upload + analysis trigger
-│   │   │   ├── Analysis.jsx    # Change detection results viewer
-│   │   │   ├── Reports.jsx     # Compliance report table with CSV export
-│   │   │   ├── Alerts.jsx      # Alert feed with severity filtering
-│   │   │   └── Sidebar.jsx     # Navigation sidebar
-│   │   └── main.jsx            # React entry point
-│   ├── index.html              # HTML entry with fonts
-│   ├── vite.config.js          # Vite + API proxy config
-│   └── package.json            # NPM dependencies
-└── .gitignore
-```
-
-## 🔌 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/demo-data` | All demo data for dashboard |
-| GET | `/api/stats` | Dashboard KPI statistics |
-| GET | `/api/areas` | List all industrial areas |
-| GET | `/api/plots` | List all plots (filterable) |
-| GET | `/api/geojson` | Plots as GeoJSON for map |
-| GET | `/api/alerts` | All violation alerts |
-| POST | `/api/upload` | Upload reference + satellite images |
-| POST | `/api/analyze/{id}` | Run change detection on project |
-| GET | `/api/projects` | List analysis projects |
-
-## 🎯 How It Works
-
-1. **Upload** — Officials upload the original allotment map (reference) and a recent satellite/drone image
-2. **AI Analysis** — OpenCV aligns images, computes pixel-level differences, detects contour boundaries
-3. **Results** — System generates heatmaps, annotated overlays, compliance scores, and deviation reports
-4. **Monitor** — Dashboard shows real-time status across all industrial areas with actionable alerts
-
-## 👥 Team
-
-Built for the CSIDC Hackathon — Automated Industrial Land Monitoring
+## 👥 Hackathon Team
+Built for **CSIDC Automated Industrial Land Monitoring**.
+*Redefining Governance with Satellite Intelligence.*

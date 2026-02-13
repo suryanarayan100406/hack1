@@ -2,6 +2,7 @@
 Demo data for CSIDC Land Sentinel MVP.
 Pre-loaded industrial area coordinates and simulated plot data
 from real CSIDC industrial zones in Chhattisgarh.
+Enhanced with Phase 2 Intelligence Metrics (Health, Financials, Classification).
 """
 
 INDUSTRIAL_AREAS = [
@@ -62,9 +63,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 4500,
         "current_area_sqm": 4520,
         "status": "violation",
+        "classification": "ENCROACHED",
         "violation_type": "encroachment",
         "deviation_pct": 0.44,
-        "compliance_score": 35,
+        "compliance_score": 85,
+        "health_index": 82.5,
+        "financial_impact": {
+            "estimated_revenue_leakage": 0,
+            "recoverable_penalty": 4000 
+        },
         "lease_status": "overdue",
         "last_payment": "2025-06-15",
         "last_checked": "2026-02-10",
@@ -82,9 +89,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 3200,
         "current_area_sqm": 3200,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
-        "compliance_score": 95,
+        "compliance_score": 98,
+        "health_index": 99.0,
+        "financial_impact": {
+            "estimated_revenue_leakage": 0,
+            "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-01-10",
         "last_checked": "2026-02-10",
@@ -102,9 +115,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 5000,
         "current_area_sqm": 0,
         "status": "vacant",
+        "classification": "VACANT",
         "violation_type": "unused_land",
         "deviation_pct": 100.0,
         "compliance_score": 10,
+        "health_index": 15.0,
+        "financial_impact": {
+            "estimated_revenue_leakage": 250000,
+            "recoverable_penalty": 0
+        },
         "lease_status": "overdue",
         "last_payment": "2024-12-01",
         "last_checked": "2026-02-10",
@@ -122,9 +141,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 2800,
         "current_area_sqm": 3450,
         "status": "violation",
+        "classification": "MAJOR ENCROACHMENT",
         "violation_type": "unauthorized_construction",
         "deviation_pct": 23.2,
         "compliance_score": 20,
+        "health_index": 35.5,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 130000
+        },
         "lease_status": "current",
         "last_payment": "2026-01-20",
         "last_checked": "2026-02-08",
@@ -143,9 +168,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 15000,
         "current_area_sqm": 15200,
         "status": "violation",
+        "classification": "ENCROACHED",
         "violation_type": "encroachment",
         "deviation_pct": 1.3,
         "compliance_score": 55,
+        "health_index": 62.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 40000
+        },
         "lease_status": "current",
         "last_payment": "2026-02-01",
         "last_checked": "2026-02-12",
@@ -163,9 +194,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 12000,
         "current_area_sqm": 12000,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 98,
+        "health_index": 97.5,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-01-25",
         "last_checked": "2026-02-12",
@@ -183,9 +220,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 8500,
         "current_area_sqm": 8500,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 88,
+        "health_index": 92.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-01-15",
         "last_checked": "2026-02-11",
@@ -203,9 +246,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 10000,
         "current_area_sqm": 11800,
         "status": "violation",
+        "classification": "MAJOR ENCROACHMENT",
         "violation_type": "unauthorized_construction",
         "deviation_pct": 18.0,
         "compliance_score": 25,
+        "health_index": 30.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 360000
+        },
         "lease_status": "overdue",
         "last_payment": "2025-08-10",
         "last_checked": "2026-02-12",
@@ -224,9 +273,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 6000,
         "current_area_sqm": 6000,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 92,
+        "health_index": 95.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-02-05",
         "last_checked": "2026-02-09",
@@ -244,9 +299,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 4000,
         "current_area_sqm": 4800,
         "status": "violation",
+        "classification": "MAJOR ENCROACHMENT",
         "violation_type": "encroachment",
         "deviation_pct": 20.0,
         "compliance_score": 30,
+        "health_index": 38.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 160000
+        },
         "lease_status": "overdue",
         "last_payment": "2025-04-20",
         "last_checked": "2026-02-09",
@@ -264,9 +325,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 3500,
         "current_area_sqm": 0,
         "status": "vacant",
+        "classification": "VACANT",
         "violation_type": "unused_land",
         "deviation_pct": 100.0,
         "compliance_score": 5,
+        "health_index": 10.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 175000,
+             "recoverable_penalty": 0
+        },
         "lease_status": "overdue",
         "last_payment": "2024-06-01",
         "last_checked": "2026-02-09",
@@ -285,9 +352,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 7000,
         "current_area_sqm": 7000,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 90,
+        "health_index": 92.5,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-01-30",
         "last_checked": "2026-02-07",
@@ -305,9 +378,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 5500,
         "current_area_sqm": 6700,
         "status": "violation",
+        "classification": "MAJOR ENCROACHMENT",
         "violation_type": "encroachment",
         "deviation_pct": 21.8,
         "compliance_score": 28,
+        "health_index": 32.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 240000
+        },
         "lease_status": "overdue",
         "last_payment": "2025-09-15",
         "last_checked": "2026-02-07",
@@ -326,9 +405,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 20000,
         "current_area_sqm": 20000,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 97,
+        "health_index": 98.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-02-01",
         "last_checked": "2026-02-06",
@@ -346,9 +431,15 @@ DEMO_PLOTS = [
         "allotted_area_sqm": 9000,
         "current_area_sqm": 9000,
         "status": "compliant",
+        "classification": "FULLY CONSTRUCTED",
         "violation_type": None,
         "deviation_pct": 0.0,
         "compliance_score": 85,
+        "health_index": 90.0,
+        "financial_impact": {
+             "estimated_revenue_leakage": 0,
+             "recoverable_penalty": 0
+        },
         "lease_status": "current",
         "last_payment": "2026-01-28",
         "last_checked": "2026-02-06",

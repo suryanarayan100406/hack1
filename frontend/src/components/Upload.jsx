@@ -196,27 +196,25 @@ function Upload({ onNavigate }) {
                                 </div>
                             </div>
                         </div>
-                        {/* Built Area Stats */}
-                        {result.change_detection.built_area_change_pct !== undefined && (
-                            <div className="glass-card" style={{ marginBottom: 20, padding: 16 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
-                                    <div>
-                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Reference Built-up</div>
-                                        <div style={{ fontSize: 18, fontWeight: 700 }}>{((result.change_detection.ref_built_area_px / result.change_detection.total_pixels) * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div>
-                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Current Built-up</div>
-                                        <div style={{ fontSize: 18, fontWeight: 700 }}>{((result.change_detection.sat_built_area_px / result.change_detection.total_pixels) * 100).toFixed(1)}%</div>
-                                    </div>
-                                    <div>
-                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Built Area Change</div>
-                                        <div style={{ fontSize: 18, fontWeight: 700, color: result.change_detection.built_area_change_pct > 10 ? '#ef4444' : '#22c55e' }}>
-                                            {result.change_detection.built_area_change_pct > 0 ? '+' : ''}{result.change_detection.built_area_change_pct}%
-                                        </div>
+                        {/* Area Analysis Stats */}
+                        <div className="glass-card" style={{ marginBottom: 20, padding: 16 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
+                                <div>
+                                    <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Total Image Pixels</div>
+                                    <div style={{ fontSize: 18, fontWeight: 700 }}>{result.change_detection.total_pixels.toLocaleString()}</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Approved Area (px)</div>
+                                    <div style={{ fontSize: 18, fontWeight: 700, color: '#22c55e' }}>{result.change_detection.approved_area_px.toLocaleString()}</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Encroached Area (px)</div>
+                                    <div style={{ fontSize: 18, fontWeight: 700, color: '#ef4444' }}>
+                                        {result.change_detection.changed_pixels.toLocaleString()}
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* Result Images */}
                         <div className="analysis-grid">
@@ -225,15 +223,15 @@ function Upload({ onNavigate }) {
                                 <img src={result.outputs.heatmap} alt="Heatmap" />
                             </div>
                             <div className="analysis-image-card">
-                                <div className="card-header">🎯 Boundary Overlay (Green=Ref, Red=Deviation)</div>
-                                <img src={result.outputs.annotated} alt="Annotated" />
+                                <div className="card-header">🎯 Approved Boundary (Green)</div>
+                                <img src={result.outputs.comparison} alt="Comparison" />
                             </div>
                             <div className="analysis-image-card">
-                                <div className="card-header">🧭 Edge Comparison (Green=Ref, Cyan=Current, Red=New)</div>
+                                <div className="card-header">💀 Encroachment Mask (Binary)</div>
                                 <img src={result.outputs.mask} alt="Mask" />
                             </div>
                             <div className="analysis-image-card">
-                                <div className="card-header">↔️ Side-by-Side Comparison</div>
+                                <div className="card-header">↔️ Reference vs Satellite</div>
                                 <img src={result.outputs.comparison} alt="Comparison" />
                             </div>
                         </div>

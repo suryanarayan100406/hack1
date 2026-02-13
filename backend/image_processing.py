@@ -11,10 +11,11 @@ import uuid
 from datetime import datetime
 
 # Import New Core Engines
-from .core.intelligence import IntelligenceEngine
-from .core.compliance import ComplianceEngine
-from .core.economics import EconomicsEngine
-from .core.reporting import ReportingEngine
+# Import New Core Engines
+from core.intelligence import IntelligenceEngine
+from core.compliance import ComplianceEngine
+from core.economics import EconomicsEngine
+from core.reporting import ReportingEngine
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")

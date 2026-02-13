@@ -255,6 +255,41 @@ function Upload({ onNavigate }) {
                             </div>
                         )}
 
+                        {/* PHASE 3: DECISION SUPPORT & GOVERNANCE */}
+                        {result.audit_report && (
+                            <div className="glass-card" style={{ marginBottom: 20, padding: 16 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                                    <h4 style={{ margin: 0, color: '#e2e8f0' }}>📋 Governance & Actions</h4>
+                                    <button
+                                        onClick={() => {
+                                            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result.audit_report, null, 2));
+                                            const downloadAnchorNode = document.createElement('a');
+                                            downloadAnchorNode.setAttribute("href", dataStr);
+                                            downloadAnchorNode.setAttribute("download", `audit_report_${result.project_id}.json`);
+                                            document.body.appendChild(downloadAnchorNode);
+                                            downloadAnchorNode.click();
+                                            downloadAnchorNode.remove();
+                                        }}
+                                        className="upload-button"
+                                        style={{ padding: '6px 12px', fontSize: 13, background: '#3b82f6' }}
+                                    >
+                                        Download Audit JSON
+                                    </button>
+                                </div>
+
+                                <div style={{ background: 'rgba(15, 23, 42, 0.4)', borderRadius: 8, padding: 12 }}>
+                                    <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                        Recommended Actions (Automated)
+                                    </div>
+                                    <ul style={{ margin: 0, paddingLeft: 20, color: '#cbd5e1' }}>
+                                        {result.audit_report.compliance.recommended_actions.map((action, idx) => (
+                                            <li key={idx} style={{ marginBottom: 4 }}>{action}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Result Images */}
                         <div className="analysis-grid">
                             <div className="analysis-image-card">

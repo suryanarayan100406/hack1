@@ -166,17 +166,17 @@ function Upload({ onNavigate }) {
                         <div className="kpi-grid" style={{ marginBottom: 20 }}>
                             <div className={`kpi-card ${result.change_detection.severity === 'low' ? 'success' : result.change_detection.severity === 'critical' ? 'danger' : 'warning'}`}>
                                 <div className="kpi-header">
-                                    <span className="kpi-label">Change Detected</span>
+                                    <span className="kpi-label">Encroachment</span>
                                 </div>
                                 <div className="kpi-value">{result.change_detection.change_percentage}%</div>
-                                <div className="kpi-sub">of total area</div>
+                                <div className="kpi-sub">of allotted boundary</div>
                             </div>
                             <div className="kpi-card info">
                                 <div className="kpi-header">
-                                    <span className="kpi-label">Change Regions</span>
+                                    <span className="kpi-label">Deviation Zones</span>
                                 </div>
                                 <div className="kpi-value">{result.change_detection.num_change_regions}</div>
-                                <div className="kpi-sub">distinct areas</div>
+                                <div className="kpi-sub">structural deviations</div>
                             </div>
                             <div className="kpi-card primary">
                                 <div className="kpi-header">
@@ -187,7 +187,7 @@ function Upload({ onNavigate }) {
                             </div>
                             <div className={`kpi-card ${result.change_detection.status === 'compliant' ? 'success' : 'danger'}`}>
                                 <div className="kpi-header">
-                                    <span className="kpi-label">Status</span>
+                                    <span className="kpi-label">Verdict</span>
                                 </div>
                                 <div className="kpi-value" style={{ fontSize: 22 }}>
                                     <span className={`status-badge ${result.change_detection.status}`}>
@@ -196,19 +196,40 @@ function Upload({ onNavigate }) {
                                 </div>
                             </div>
                         </div>
+                        {/* Built Area Stats */}
+                        {result.change_detection.built_area_change_pct !== undefined && (
+                            <div className="glass-card" style={{ marginBottom: 20, padding: 16 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
+                                    <div>
+                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Reference Built-up</div>
+                                        <div style={{ fontSize: 18, fontWeight: 700 }}>{((result.change_detection.ref_built_area_px / result.change_detection.total_pixels) * 100).toFixed(1)}%</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Current Built-up</div>
+                                        <div style={{ fontSize: 18, fontWeight: 700 }}>{((result.change_detection.sat_built_area_px / result.change_detection.total_pixels) * 100).toFixed(1)}%</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Built Area Change</div>
+                                        <div style={{ fontSize: 18, fontWeight: 700, color: result.change_detection.built_area_change_pct > 10 ? '#ef4444' : '#22c55e' }}>
+                                            {result.change_detection.built_area_change_pct > 0 ? '+' : ''}{result.change_detection.built_area_change_pct}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Result Images */}
                         <div className="analysis-grid">
                             <div className="analysis-image-card">
-                                <div className="card-header">🔥 Change Heatmap</div>
+                                <div className="card-header">🔥 Encroachment Heatmap</div>
                                 <img src={result.outputs.heatmap} alt="Heatmap" />
                             </div>
                             <div className="analysis-image-card">
-                                <div className="card-header">🎯 Annotated Overlay</div>
+                                <div className="card-header">🎯 Boundary Overlay (Green=Ref, Red=Deviation)</div>
                                 <img src={result.outputs.annotated} alt="Annotated" />
                             </div>
                             <div className="analysis-image-card">
-                                <div className="card-header">📐 Change Mask</div>
+                                <div className="card-header">🧭 Edge Comparison (Green=Ref, Cyan=Current, Red=New)</div>
                                 <img src={result.outputs.mask} alt="Mask" />
                             </div>
                             <div className="analysis-image-card">
@@ -230,9 +251,9 @@ function Upload({ onNavigate }) {
                     <h3 style={{ marginBottom: 12, fontSize: 16 }}>ℹ️ How it works</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
                         {[
-                            { icon: '1️⃣', title: 'Upload Images', desc: 'Upload the original allotment map and a recent satellite/drone image of the same area' },
-                            { icon: '2️⃣', title: 'AI Analysis', desc: 'Our CV engine aligns the images, detects pixel-level changes, and identifies contour boundaries' },
-                            { icon: '3️⃣', title: 'Get Results', desc: 'View heatmaps, annotated overlays, compliance scores, and actionable deviation reports' },
+                            { icon: '1️⃣', title: 'Upload Images', desc: 'Upload the original allotment/reference map and a recent satellite or drone image of the same area' },
+                            { icon: '2️⃣', title: 'Structural Analysis', desc: 'Our engine extracts edges and built-up areas from both images, then compares structural boundaries — not raw pixels' },
+                            { icon: '3️⃣', title: 'Encroachment Report', desc: 'View boundary overlays, edge comparisons, encroachment %, and compliance scores based on actual structural deviation' },
                         ].map(step => (
                             <div key={step.title} style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: 28, marginBottom: 8 }}>{step.icon}</div>

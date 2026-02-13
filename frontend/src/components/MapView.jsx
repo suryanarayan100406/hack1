@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, GeoJSON, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup, useMap, ImageOverlay } from 'react-leaflet'
 
 function FlyToArea({ center, zoom }) {
     const map = useMap()
@@ -126,12 +126,29 @@ function MapView() {
                             />
                             <FlyToArea center={mapCenter} zoom={mapZoom} />
                             {filteredGeoJson && (
-                                <GeoJSON
-                                    key={selectedArea || 'all'}
-                                    data={filteredGeoJson}
-                                    style={geoJsonStyle}
-                                    onEachFeature={onEachFeature}
-                                />
+                                <>
+                                    <GeoJSON
+                                        key={selectedArea || 'all'}
+                                        data={filteredGeoJson}
+                                        style={geoJsonStyle}
+                                        onEachFeature={onEachFeature}
+                                    />
+                                    {/* Render Image Overlays for Violations */}
+                                    {filteredGeoJson.features.map(feature => {
+                                        if (feature.properties.overlay_url && feature.properties.bounds) {
+                                            return (
+                                                <ImageOverlay
+                                                    key={`overlay-${feature.properties.id}`}
+                                                    url={feature.properties.overlay_url}
+                                                    bounds={feature.properties.bounds}
+                                                    opacity={0.8}
+                                                    zIndex={1000}
+                                                />
+                                            )
+                                        }
+                                        return null
+                                    })}
+                                </>
                             )}
                         </MapContainer>
                     </div>
@@ -146,10 +163,36 @@ function MapView() {
                                 <span className={`status-badge ${selectedPlot.status}`}>{selectedPlot.status}</span>
                             </div>
 
+                            {/* Analysis Image Preview */}
+                            {selectedPlot.overlay_url && (
+                                <div style={{ marginBottom: 12, borderRadius: 8, overflow: 'hidden', border: '1px solid #334155' }}>
+                                    <div style={{ fontSize: 11, background: '#1e293b', padding: '4px 8px', color: '#94a3b8' }}>
+                                        Analysis Heatmap
+                                    </div>
+                                    <img
+                                        src={selectedPlot.overlay_url}
+                                        alt="Analysis Overlay"
+                                        style={{ width: '100%', display: 'block' }}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            console.error("Failed to load overlay image:", selectedPlot.overlay_url);
+                                        }}
+                                    />
+                                </div>
+                            )}
+
                             <div className="plot-detail-row">
                                 <span className="plot-detail-label">Plot ID</span>
                                 <span className="plot-detail-value">{selectedPlot.id}</span>
                             </div>
+                            {selectedPlot.violation_type && (
+                                <div className="plot-detail-row">
+                                    <span className="plot-detail-label">Violation Type</span>
+                                    <span className="plot-detail-value" style={{ color: '#ef4444' }}>
+                                        {selectedPlot.violation_type.replace(/_/g, ' ')}
+                                    </span>
+                                </div>
+                            )}
                             <div className="plot-detail-row">
                                 <span className="plot-detail-label">Allotted Area</span>
                                 <span className="plot-detail-value">{selectedPlot.allotted_area_sqm.toLocaleString()} sqm</span>

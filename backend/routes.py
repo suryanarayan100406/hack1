@@ -14,6 +14,7 @@ from demo_data import (
     get_dashboard_stats,
     get_plots_geojson,
 )
+import demo_data
 
 router = APIRouter(prefix="/api")
 
@@ -22,13 +23,13 @@ router = APIRouter(prefix="/api")
 
 @router.get("/demo-data")
 async def get_demo_data():
-    """Get all demo data for the dashboard."""
+    stats = demo_data.get_dashboard_stats()
     return {
-        "areas": INDUSTRIAL_AREAS,
-        "plots": DEMO_PLOTS,
-        "alerts": DEMO_ALERTS,
-        "stats": get_dashboard_stats(),
-        "geojson": get_plots_geojson(),
+        "stats": stats,
+        "plots": stats["plots"], # Use plots from stats which includes live data
+        "alerts": demo_data.DEMO_ALERTS,
+        "areas": stats["areas"], # Use dynamic areas from stats
+        "geojson": demo_data.get_plots_geojson()
     }
 
 

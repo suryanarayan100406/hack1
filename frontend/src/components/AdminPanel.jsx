@@ -149,19 +149,19 @@ function AdminPanel({ onNavigate }) {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                             <div>
                                 <label style={{ fontSize: 12 }}>Min Latitude</label>
-                                <input className="form-input" value={latMin} onChange={e => setLatMin(e.target.value)} />
+                                <input type="number" step="0.000001" className="form-input" value={latMin} onChange={e => setLatMin(e.target.value)} />
                             </div>
                             <div>
                                 <label style={{ fontSize: 12 }}>Max Latitude</label>
-                                <input className="form-input" value={latMax} onChange={e => setLatMax(e.target.value)} />
+                                <input type="number" step="0.000001" className="form-input" value={latMax} onChange={e => setLatMax(e.target.value)} />
                             </div>
                             <div>
                                 <label style={{ fontSize: 12 }}>Min Longitude</label>
-                                <input className="form-input" value={lngMin} onChange={e => setLngMin(e.target.value)} />
+                                <input type="number" step="0.000001" className="form-input" value={lngMin} onChange={e => setLngMin(e.target.value)} />
                             </div>
                             <div>
                                 <label style={{ fontSize: 12 }}>Max Longitude</label>
-                                <input className="form-input" value={lngMax} onChange={e => setLngMax(e.target.value)} />
+                                <input type="number" step="0.000001" className="form-input" value={lngMax} onChange={e => setLngMax(e.target.value)} />
                             </div>
                         </div>
                     </div>

@@ -41,19 +41,22 @@ function Dashboard({ onNavigate }) {
 
     const { stats, alerts, areas } = data
 
+    // Defensive checks to prevent crash
+    if (!stats || !areas) return <div className="empty-state"><h3>Invalid Data Format</h3></div>
+
     const pieData = [
-        { name: 'Compliant', value: stats.compliant, color: COLORS.compliant },
-        { name: 'Violations', value: stats.violations, color: COLORS.violation },
-        { name: 'Vacant', value: stats.vacant, color: COLORS.vacant },
+        { name: 'Compliant', value: stats.compliant || 0, color: COLORS.compliant },
+        { name: 'Violations', value: stats.violations || 0, color: COLORS.violation },
+        { name: 'Vacant', value: stats.vacant || 0, color: COLORS.vacant },
     ]
 
-    const areaChartData = Object.values(stats.area_stats).map(a => ({
-        name: a.name.replace(' Industrial Area', ''),
-        Compliant: a.compliant,
-        Violations: a.violations,
-        Vacant: a.vacant,
-        'Avg Score': a.avg_compliance,
-    }))
+    const areaChartData = stats.area_stats ? Object.values(stats.area_stats).map(a => ({
+        name: a.name ? a.name.replace(' Industrial Area', '') : 'Unknown',
+        Compliant: a.compliant || 0,
+        Violations: a.violations || 0,
+        Vacant: a.vacant || 0,
+        'Avg Score': a.avg_compliance || 0,
+    })) : []
 
     const recentAlerts = [...alerts]
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))

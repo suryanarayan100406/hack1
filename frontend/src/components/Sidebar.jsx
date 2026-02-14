@@ -10,7 +10,7 @@ const navItems = [
     { id: 'citizen', label: 'Citizen Watch', icon: '👁️' },
 ]
 
-function Sidebar({ activePage, onNavigate }) {
+function Sidebar({ activePage, onNavigate, onLogout }) {
     return (
         <aside className="sidebar">
             <div className="sidebar-brand">
@@ -32,6 +32,14 @@ function Sidebar({ activePage, onNavigate }) {
             </nav>
 
             <div className="sidebar-footer">
+                <div
+                    className="nav-item"
+                    onClick={onLogout}
+                    style={{ marginBottom: 12, color: '#ef4444', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 12 }}
+                >
+                    <span className="nav-icon">🚪</span>
+                    <span>Logout</span>
+                </div>
                 <div className="sidebar-status">
                     <span className="status-dot"></span>
                     <span>System Active • v1.0</span>

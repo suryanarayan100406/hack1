@@ -358,7 +358,7 @@ function Upload({ onNavigate }) {
 
                         <div style={{ textAlign: 'center', marginBottom: 20 }}>
                             <a
-                                href={`/api/reports/${result.project_id}/pdf`}
+                                href={getApiUrl(`/api/reports/${result.project_id}/pdf`)}
                                 target="_blank"
                                 className="btn-primary"
                                 style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', padding: '10px 20px' }}
@@ -406,19 +406,19 @@ function Upload({ onNavigate }) {
                         <div className="analysis-grid">
                             <div className="analysis-image-card">
                                 <div className="card-header">🔥 Encroachment Heatmap</div>
-                                <img src={result.outputs.heatmap} alt="Heatmap" />
+                                <img src={getApiUrl(result.outputs.heatmap)} alt="Heatmap" />
                             </div>
                             <div className="analysis-image-card">
                                 <div className="card-header">🎯 Approved Boundary (Green)</div>
-                                <img src={result.outputs.comparison} alt="Comparison" />
+                                <img src={getApiUrl(result.outputs.comparison)} alt="Comparison" />
                             </div>
                             <div className="analysis-image-card">
                                 <div className="card-header">💀 Encroachment Mask (Binary)</div>
-                                <img src={result.outputs.mask} alt="Mask" />
+                                <img src={getApiUrl(result.outputs.mask)} alt="Mask" />
                             </div>
                             <div className="analysis-image-card">
                                 <div className="card-header">↔️ Reference vs Satellite</div>
-                                <img src={result.outputs.comparison} alt="Comparison" />
+                                <img src={getApiUrl(result.outputs.comparison)} alt="Comparison" />
                             </div>
                         </div>
                     </div>

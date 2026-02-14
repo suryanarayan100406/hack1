@@ -172,7 +172,7 @@ function Reports() {
                                         <td>
                                             {plot.status !== 'vacant' && (
                                                 <a
-                                                    href={`/api/reports/${plot.id}/pdf`}
+                                                    href={getApiUrl(`/api/reports/${plot.id}/pdf`)}
                                                     target="_blank"
                                                     title="Download Report"
                                                     style={{ textDecoration: 'none', fontSize: 16 }}

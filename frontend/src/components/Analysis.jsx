@@ -87,7 +87,7 @@ function Analysis() {
                                     {Object.entries(selectedProject.results.outputs).map(([key, url]) => (
                                         <div key={key} className="analysis-image-card">
                                             <div className="card-header">{key.charAt(0).toUpperCase() + key.slice(1)}</div>
-                                            <img src={url} alt={key} />
+                                            <img src={getApiUrl(url)} alt={key} />
                                         </div>
                                     ))}
                                 </div>

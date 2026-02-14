@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getApiUrl } from '../config'
 
 function Analysis() {
     const [projects, setProjects] = useState([])
@@ -6,7 +7,7 @@ function Analysis() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch('/api/projects')
+        fetch(getApiUrl('/api/projects'))
             .then(res => res.json())
             .then(data => { setProjects(data); setLoading(false) })
             .catch(() => setLoading(false))

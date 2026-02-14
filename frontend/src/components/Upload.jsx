@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { getApiUrl } from '../config'
 
 function Upload({ onNavigate }) {
     const [refImage, setRefImage] = useState(null)
@@ -20,7 +21,7 @@ function Upload({ onNavigate }) {
 
     // Load Registry on Mount
     useEffect(() => {
-        fetch('/api/official-layouts')
+        fetch(getApiUrl('/api/official-layouts'))
             .then(res => res.json())
             .then(data => {
                 console.log("Registry Data:", data)
@@ -82,13 +83,15 @@ function Upload({ onNavigate }) {
                 formData.append('reference', refImage)
             }
 
-            const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData })
+
+            const uploadRes = await fetch(getApiUrl('/api/upload'), { method: 'POST', body: formData })
             if (!uploadRes.ok) throw new Error(await uploadRes.text())
 
             const uploadData = await uploadRes.json()
 
             if (uploadData.project?.id) {
-                const analyzeRes = await fetch(`/api/analyze/${uploadData.project.id}`, { method: 'POST' })
+                // 2. Trigger Analysis
+                const analyzeRes = await fetch(getApiUrl(`/api/analyze/${uploadData.project.id}`), { method: 'POST' })
                 if (!analyzeRes.ok) throw new Error(await analyzeRes.text())
                 const analyzeData = await analyzeRes.json()
                 setResult(analyzeData)
@@ -349,16 +352,20 @@ function Upload({ onNavigate }) {
                                             ₹{result.change_detection.financial_impact.estimated_revenue_leakage.toLocaleString()}
                                         </div>
                                     </div>
-                                    {/* Recoverable Penalty */}
-                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: 12, borderRadius: 8 }}>
-                                        <div style={{ fontSize: 12, color: '#94a3b8' }}>Recoverable Penalty</div>
-                                        <div style={{ fontSize: 18, fontWeight: 700, color: '#22c55e' }}>
-                                            ₹{result.change_detection.financial_impact.recoverable_penalty.toLocaleString()}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         )}
+
+                        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                            <a
+                                href={`/api/reports/${result.project_id}/pdf`}
+                                target="_blank"
+                                className="btn-primary"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', padding: '10px 20px' }}
+                            >
+                                📄 Download Official Report
+                            </a>
+                        </div>
 
                         {/* PHASE 3: DECISION SUPPORT & GOVERNANCE */}
                         {result.audit_report && (
@@ -441,7 +448,7 @@ function Upload({ onNavigate }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

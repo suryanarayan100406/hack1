@@ -124,7 +124,51 @@ def get_dashboard_stats():
     current_areas = get_industrial_areas()
     
     live_plots = get_live_plots()
-    all_plots = DEMO_PLOTS + live_plots
+    # Merge Registry Plots + Live Analysis (same logic as get_plots_geojson)
+    # 1. Create a dict of analyzed plot IDs to avoid duplicates or to merge data
+    analyzed_ids = {p["area_id"]: p for p in live_plots}
+    registry = get_official_layouts()
+    
+    combined_plots = []
+    
+    for reg in registry:
+        # Check if we have an analysis for this registry item
+        if reg["id"] in analyzed_ids:
+            # Use the analyzed version (contains status, details, overlay)
+            combined_plots.append(analyzed_ids[reg["id"]])
+        else:
+            # Add as raw/vacant plot
+            coords = reg.get("coordinates", [])
+            lats = [c[0] for c in coords]
+            lngs = [c[1] for c in coords]
+            bounds = [[min(lats), min(lngs)], [max(lats), max(lngs)]] if coords else []
+            
+            combined_plots.append({
+                "id": reg["id"], 
+                "name": reg["name"],
+                "area_id": reg["id"], 
+                "status": "vacant", 
+                "classification": "UNANALYZED",
+                "violation_type": None,
+                "deviation_pct": 0,
+                "compliance_score": 100,
+                "allotted_area_sqm": reg.get("approved_area_sqm", 0),
+                "current_area_sqm": 0,
+                "coordinates": coords,
+                "bounds": bounds,
+                "overlay_url": None, 
+                "lease_status": "active",
+                "last_payment": "-",
+                "last_checked": "Not Scanned"
+            })
+
+    # Add any live plots that might not match a registry ID (edge case)
+    known_ids = {p["id"] for p in combined_plots}
+    for p in live_plots:
+        if p["area_id"] not in known_ids and p["id"] not in known_ids:
+             combined_plots.append(p)
+
+    all_plots = combined_plots # Use the merged list
     
     total = len(all_plots)
     compliant = sum(1 for p in all_plots if p["status"] == "compliant")
@@ -162,8 +206,8 @@ def get_dashboard_stats():
         "total_current_sqm": total_current,
         "avg_compliance_score": round(avg_compliance, 1),
         "area_stats": area_stats,
-        "areas": current_areas, # Send dynamic areas to frontend
-        "plots": all_plots # Send all plots
+        "areas": current_areas, 
+        "plots": all_plots 
     }
 
 

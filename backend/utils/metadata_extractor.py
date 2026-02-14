@@ -1,85 +1,103 @@
-import cv2
-import numpy as np
-import re
-import pytesseract
+import google.generativeai as genai
+import os
+import json
+import imghdr
+from dotenv import load_dotenv
+
+# Load API Key
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+
+print(f"DEBUG: Gemini API Key Loaded? {bool(api_key)}")
+
+if api_key:
+    genai.configure(api_key=api_key)
+
+def log_debug(msg):
+    with open("debug_gemini.log", "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
 
 def extract_layout_metadata(image_bytes):
     """
-    Analyzes a map image to extract metadata using OCR.
-    Returns a dictionary of discovered fields.
+    Analyzes a map image using Gemini 1.5 Flash to extract metadata.
+    Returns a dictionary of discovered fields (name, id, area, scale).
     """
+    log_debug("--- New Analysis Request ---")
     try:
-        # Decode image
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        if img is None:
-            return {}
+        if not api_key:
+            log_debug("ERROR: Gemini API Key is missing in environment.")
+            return {"error": "Gemini API Key missing"}
 
-        # Preprocessing for OCR
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        # Denoise
-        denoised = cv2.fastNlMeansDenoising(gray)
-        
-        # Thresholding (Otsu's binarization)
-        _, binary = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        
-        # Run OCR
-        # psm 11: Sparse text. psm 3: Fully automatic segmentation (default).
-        # We try default first.
-        try:
-            text = pytesseract.image_to_string(binary)
-        except Exception:
-            # Fallback if tesseract not installed/found
-            return {"error": "OCR engine not available"}
-            
-        print(f"OCR Extracted Text (First 100 chars): {text[:100]}")
-        
-        # Parse Text
-        metadata = {}
-        
-        # 1. Industrial Area Name
-        # Look for "Industrial Area", "Growth Center", "Project:"
-        name_match = re.search(r"(?:Project|Name|Industrial Area|Sector)[:\s]+([A-Za-z0-9\s\-\(\)]+)", text, re.IGNORECASE)
-        if name_match:
-            metadata["name"] = name_match.group(1).strip()
-            
-        # 2. Area
-        # Look for digits followed by sqm, acres, ha
-        area_match = re.search(r"Total Area[:\s]+([\d\.,]+)\s*(sqm|sq\.m|m2|acres|ha)", text, re.IGNORECASE)
-        if area_match:
-            raw_area = area_match.group(1).replace(",", "")
-            unit = area_match.group(2).lower()
+        # Detect Mime Type
+        img_type = imghdr.what(None, h=image_bytes)
+        mime_type = f"image/{img_type}" if img_type else "image/jpeg"
+        log_debug(f"DEBUG: Detected Image Type: {mime_type}")
+
+        # Try multiple models in order of preference
+        models_to_try = [
+            'gemini-1.5-flash',
+            'gemini-1.5-flash-latest',
+            'gemini-1.5-pro',
+            'gemini-1.5-pro-latest',
+            'gemini-pro-vision'
+        ]
+
+        response = None
+        last_error = None
+
+        for model_name in models_to_try:
             try:
-                val = float(raw_area)
-                # Normalize to sqm
-                if "acre" in unit:
-                    val *= 4046.86
-                elif "ha" in unit:
-                    val *= 10000
-                metadata["area"] = round(val, 2)
-            except:
+                log_debug(f"DEBUG: Trying model: {model_name}")
+                model = genai.GenerativeModel(model_name)
+                
+                response = model.generate_content([
+                    {'mime_type': mime_type, 'data': image_bytes},
+                    prompt
+                ])
+                # If successful, break loop
+                break
+            except Exception as e:
+                log_debug(f"WARNING: Model {model_name} failed: {e}")
+                last_error = e
+        
+        if not response:
+            raise last_error
+
+        log_debug(f"DEBUG: Raw Gemini Response: {response.text}")
+        
+        # Parse output
+        raw_text = response.text
+        if "```json" in raw_text:
+            raw_text = raw_text.split("```json")[1].split("```")[0]
+        elif "```" in raw_text:
+            raw_text = raw_text.split("```")[1].split("```")[0]
+            
+        data = json.loads(raw_text.strip())
+        log_debug(f"DEBUG: Parsed JSON: {data}")
+        
+        # Post-process Area to Float
+        if data.get("area"):
+            try:
+                # Remove commas and non-numeric chars except .
+                area_str = str(data["area"]).replace(",", "")
+                # Extract numbers only if needed, but Gemini usually gives clean numbers
+                area_val = float(area_str)
+                
+                unit = str(data.get("unit", "")).lower()
+                
+                # Convert to SQM if needed
+                if "hectare" in unit or "ha" in unit:
+                    area_val *= 10000
+                elif "acre" in unit:
+                    area_val *= 4046.86
+                
+                data["area"] = round(area_val, 2)
+            except Exception as e:
+                log_debug(f"DEBUG: Area conversion error: {e}")
                 pass
                 
-        # 3. ID / Zone
-        # Look for "Zone-X", "Block-Y"
-        id_match = re.search(r"(Zone|Block|Phase)[\s\-]+([A-Z0-9]+)", text, re.IGNORECASE)
-        if id_match:
-            metadata["category_hint"] = f"{id_match.group(1)} {id_match.group(2)}"
-            # Construct a potential ID
-            if "name" in metadata:
-                metadata["id"] = f"{metadata['name'].split()[0].upper()}-{id_match.group(1).upper()}-{id_match.group(2)}"
-            else:
-                metadata["id"] = f"CSIDC-{id_match.group(1).upper()}-{id_match.group(2)}"
-                
-        # 4. Sheet Number / Scale (Optional)
-        scale_match = re.search(r"Scale\s*1\s*:\s*(\d+)", text, re.IGNORECASE)
-        if scale_match:
-            metadata["scale"] = f"1:{scale_match.group(1)}"
-            
-        return metadata
+        return data
 
     except Exception as e:
-        print(f"Metadata extraction failed: {e}")
-        return {}
+        log_debug(f"ERROR: Gemini Analysis failed: {e}")
+        return {"error": str(e)}

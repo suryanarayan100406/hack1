@@ -6,6 +6,8 @@ Extracts digital plot polygons from static PNG layout maps using HSV thresholdin
 import cv2
 import numpy as np
 
+import os
+
 def process_layout_map(image_source, debug_dir: str = None):
     """
     Convert a raster layout map (PNG/JPG) into vector polygons.
@@ -76,3 +78,64 @@ def process_layout_map(image_source, debug_dir: str = None):
 def normalize_polygon(polygon, width, height):
     """Normalize polygon coordinates to 0-1 range."""
     return [[float(p[0])/width, float(p[1])/height] for p in polygon]
+
+def extract_all_plots(image_source):
+    """
+    Extracts ALL plot polygons from a layout map using Canny Edge + Hierarchy.
+    Returns a list of polygons (normalized) and their contours.
+    """
+    if isinstance(image_source, str):
+        img = cv2.imread(image_source)
+    elif isinstance(image_source, bytes):
+        nparr = np.frombuffer(image_source, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    else:
+        img = image_source
+        
+    h, w = img.shape[:2]
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # 1. Preprocessing
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+    # 2. Canny Edge Detection
+    v = np.median(blurred)
+    sigma = 0.33
+    lower = int(max(0, (1.0 - sigma) * v))
+    upper = int(min(255, (1.0 + sigma) * v))
+    edges = cv2.Canny(blurred, lower, upper)
+    
+    # 3. Morphological Closing
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    closed = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel)
+    
+    # 4. Find Contours with Hierarchy
+    contours, hierarchy = cv2.findContours(closed, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    
+    plot_polygons = []
+    plot_contours = []
+    
+    if not contours:
+        return [], []
+
+    min_area = (h * w) * 0.0001
+    max_area = (h * w) * 0.5
+
+    for i, cnt in enumerate(contours):
+        area = cv2.contourArea(cnt)
+        if area < min_area or area > max_area:
+            continue
+            
+        perimeter = cv2.arcLength(cnt, True)
+        approx = cv2.approxPolyDP(cnt, 0.02 * perimeter, True)
+        
+        if len(approx) >= 3:
+            normalized = []
+            for point in approx:
+                px, py = point[0]
+                normalized.append([float(px)/w, float(py)/h])
+            
+            plot_polygons.append(normalized)
+            plot_contours.append(cnt)
+            
+    return plot_polygons, plot_contours

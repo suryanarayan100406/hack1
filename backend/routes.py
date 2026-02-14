@@ -14,6 +14,7 @@ from demo_data import (
     get_dashboard_stats,
     get_plots_geojson,
 )
+from datetime import datetime
 import demo_data
 
 router = APIRouter(prefix="/api")
@@ -160,3 +161,96 @@ async def get_project(project_id: str):
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     return project
+
+from fastapi.responses import FileResponse
+from utils.report_generator import generate_pdf_report
+import os
+
+@router.get("/reports/{project_id}/pdf")
+async def get_project_pdf(project_id: str):
+    """
+    Generate and stream an official PDF report for the project.
+    """
+    # 1. Get Project Data
+    projects = list_projects()
+    project = next((p for p in projects if p["id"] == project_id), None)
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+        
+    # 2. Add extra details (from registry if needed)
+    # The project object usually has what we need
+    
+    # 3. Generate PDF
+    # Save to temp or results folder
+    RESULTS_DIR = "results" # Should align with image_processing.py
+    project_result_dir = os.path.join(RESULTS_DIR, project_id)
+    os.makedirs(project_result_dir, exist_ok=True)
+    
+    pdf_path = os.path.join(project_result_dir, f"report_{project_id}.pdf")
+    
+    try:
+        generate_pdf_report(project, pdf_path)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"PDF Generation Failed: {e}")
+        
+    return FileResponse(pdf_path, media_type='application/pdf', filename=f"CSIDC_Report_{project_id}.pdf")
+
+@router.get("/mobile/alerts")
+async def get_mobile_alerts():
+    """
+    Get simplified alerts for the Android App.
+    Aggregates data from live analysis projects.
+    """
+    projects = list_projects()
+    alerts = []
+    
+    for p in projects:
+        # Check for violation
+        results = p.get("results", {})
+        change_data = results.get("change_detection", {})
+        status = change_data.get("status", "UNKNOWN")
+        
+        if "VIOLATION" in status or "ENCROACHMENT" in status:
+            pct = change_data.get("change_percentage", 0)
+            alert = {
+                "title": f"🚨 High Priority: {p.get('name')}",
+                "plotId": p.get("id"),
+                "description": f"Encroachment of {pct}% detected.",
+                "severity": "HIGH"
+            }
+            alerts.append(alert)
+            
+    # Add some demo alerts if empty (so the user sees something)
+    if not alerts:
+        alerts = [
+            {"title": "✅ System Active", "plotId": "SYS-001", "description": "No active violations detected.", "severity": "LOW"}
+        ]
+        
+    return alerts
+
+from pydantic import BaseModel
+
+class VerificationRequest(BaseModel):
+    plot_id: str
+    officer_id: str
+    status: str # VERIFIED, REJECTED, FLAGGED
+    notes: str
+
+@router.post("/mobile/verify")
+async def verify_alert(request: VerificationRequest):
+    """
+    Handle field verification from Mobile App.
+    """
+    # In a real app, this would update the database.
+    # For MVP, we'll log it and maybe update the demo stats in memory if possible,
+    # or just return success.
+    print(f"Received Verification: {request}")
+    
+    return {
+        "status": "success",
+        "message": f"Plot {request.plot_id} marked as {request.status}",
+        "action_id": f"ACT-{int(datetime.now().timestamp())}"
+    }

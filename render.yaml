@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: land-sentinel-backend
+    env: python
+    region: singapore
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && gunicorn main:app -k uvicorn.workers.UvicornWorker
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0

@@ -8,8 +8,8 @@ import numpy as np
 import base64
 from typing import Optional
 
-from utils.vectorize_layout import process_layout_map
-from utils.metadata_extractor import extract_layout_metadata
+from utils.vectorize_layout import process_layout_map, extract_all_plots
+
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -51,17 +51,35 @@ async def digitize_layout(file: UploadFile = File(...)):
         "message": "Vectorization successful"
     }
 
-@router.post("/analyze-layout")
-async def analyze_layout(file: UploadFile = File(...)):
+@router.post("/vectorize-plots")
+async def vectorize_plots(file: UploadFile = File(...)):
     """
-    AI Parsing: Extract metadata (Name, Area, ID) from map image text.
+    Advanced AI: Extract ALL small plot polygons from the map.
+    Returns a list of polygons and a preview.
     """
     contents = await file.read()
-    metadata = extract_layout_metadata(contents)
+    
+    try:
+        plot_polys, plot_contours = extract_all_plots(contents)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+        
+    # Create debug overlay
+    nparr = np.frombuffer(contents, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    
+    # Draw all found plots in Blue (Thickness 1)
+    # Use index -1 to draw all
+    cv2.drawContours(img, plot_contours, -1, (255, 0, 0), 2)
+    
+    _, buffer = cv2.imencode('.jpg', img)
+    img_base64 = base64.b64encode(buffer).decode('utf-8')
     
     return {
-        "message": "Analysis complete",
-        "data": metadata
+        "count": len(plot_polys),
+        "polygons": plot_polys, # List of list of [x,y]
+        "preview_image": f"data:image/jpeg;base64,{img_base64}",
+        "message": f"Found {len(plot_polys)} plots"
     }
 
 @router.post("/upload-layout")
@@ -94,6 +112,9 @@ async def upload_layout(
     try:
         # Get normalized polygon (0-1 range)
         _, normalized_poly, _ = process_layout_map(contents)
+        
+        if not normalized_poly:
+            raise ValueError("No polygon detected")
         
         # Transform to Geo Coordinates
         # Image (0,0) is Top-Left. Geo (LatMax, LngMin) is Top-Left.

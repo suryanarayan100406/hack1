@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from shapely.geometry import Polygon as ShapelyPolygon
 
-def detect_builtup_areas(image_path: str, min_area_threshold: float = 0.01, roi_mask: np.ndarray = None):
+def detect_builtup_areas(image_path: str, min_area_threshold: float = 0.0001, roi_mask: np.ndarray = None):
     """
     Detect buildings/structures in a satellite image.
     Optionally constrained to a Region of Interest (ROI).

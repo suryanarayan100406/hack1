@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getApiUrl } from '../config'
 
 function Alerts() {
     const [alerts, setAlerts] = useState([])
@@ -6,7 +7,7 @@ function Alerts() {
     const [filter, setFilter] = useState('all')
 
     useEffect(() => {
-        fetch('/api/alerts')
+        fetch(getApiUrl('/api/alerts'))
             .then(res => res.json())
             .then(data => {
                 setAlerts(data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)))

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getApiUrl } from '../config'
 
 function Reports() {
     const [plots, setPlots] = useState([])
@@ -8,7 +9,7 @@ function Reports() {
     const [areaFilter, setAreaFilter] = useState('all')
 
     useEffect(() => {
-        fetch('/api/demo-data')
+        fetch(getApiUrl('/api/demo-data'))
             .then(res => res.json())
             .then(data => {
                 setPlots(data.plots)
@@ -121,6 +122,7 @@ function Reports() {
                                     <th>Compliance</th>
                                     <th>Lease</th>
                                     <th>Last Checked</th>
+                                    <th>Report</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -167,6 +169,18 @@ function Reports() {
                                             </span>
                                         </td>
                                         <td style={{ color: '#94a3b8' }}>{plot.last_checked}</td>
+                                        <td>
+                                            {plot.status !== 'vacant' && (
+                                                <a
+                                                    href={`/api/reports/${plot.id}/pdf`}
+                                                    target="_blank"
+                                                    title="Download Report"
+                                                    style={{ textDecoration: 'none', fontSize: 16 }}
+                                                >
+                                                    📄
+                                                </a>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -174,7 +188,7 @@ function Reports() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

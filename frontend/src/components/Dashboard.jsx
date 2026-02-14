@@ -7,12 +7,14 @@ const COLORS = {
     vacant: '#8b5cf6',
 }
 
+import { getApiUrl } from '../config'
+
 function Dashboard({ onNavigate }) {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch('/api/demo-data')
+        fetch(getApiUrl('/api/demo-data'))
             .then(res => res.json())
             .then(d => { setData(d); setLoading(false) })
             .catch(() => setLoading(false))

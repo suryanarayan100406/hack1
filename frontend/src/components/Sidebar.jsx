@@ -5,6 +5,7 @@ const navItems = [
     { id: 'analysis', label: 'Analysis Results', icon: '🔍' },
     { id: 'reports', label: 'Compliance Reports', icon: '📋' },
     { id: 'alerts', label: 'Alerts', icon: '🔔' },
+    { id: 'api', label: 'Developer API', icon: '🔌' },
     { id: 'admin', label: 'Admin Panel', icon: '🛠️' },
 ]
 

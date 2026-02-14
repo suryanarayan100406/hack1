@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, GeoJSON, Popup, useMap, ImageOverlay } from 'react-leaflet'
+import { getApiUrl } from '../config'
 
 function FlyToArea({ center, zoom }) {
     const map = useMap()
@@ -19,7 +20,7 @@ function MapView() {
     const [basemap, setBasemap] = useState('satellite')
 
     useEffect(() => {
-        fetch('/api/demo-data')
+        fetch(getApiUrl('/api/demo-data'))
             .then(res => res.json())
             .then(d => { setData(d); setLoading(false) })
             .catch(() => setLoading(false))

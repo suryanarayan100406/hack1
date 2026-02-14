@@ -1,9 +1,10 @@
 # 🌍 CSIDC Land Sentinel (AI-Powered)
 > **Advanced Geospatial Intelligence for Industrial Land Monitoring**
 
-![Status](https://img.shields.io/badge/Status-Prototyping-orange)
+![Status](https://img.shields.io/badge/Status-Live_Cloud_Demo-orange)
 ![AI](https://img.shields.io/badge/AI-OpenCV_%2B_Gemini-blue)
 ![Stack](https://img.shields.io/badge/Stack-FastAPI_%2B_React_%2B_Kotlin-green)
+![License](https://img.shields.io/badge/License-MIT-purple)
 
 **CSIDC Land Sentinel** is an AI-driven platform designed to automate the monitoring of industrial land allotments. It uses satellite imagery and machine learning to detect encroachments, verify land usage compliance, and generate official audit reports, replacing manual ground surveys with digital intelligence.
 
@@ -11,32 +12,33 @@
 
 ## 🏗️ System Architecture
 
-The system follows a **Hub-and-Spoke** architecture where the Central AI Core processes data from multiple sources (Satellite, Drones, Mobile Agents) and distributes intelligence to the Dashboard and Field Officers.
+The system follows a **Split-Cloud** architecture where the Central AI Core (Python/Render) processes data from multiple sources and distributes intelligence to the Dashboard (Netlify/Vercel) and Field Officers (Android).
 
 ```mermaid
 graph TD
     subgraph "Data Sources"
         SAT[🛰️ Satellite / Drone Imagery]
         REG[📂 Official Land Registry]
-        MOB[📱 Mobile Field App]
+        CIT[👁️ Citizen Reports]
     end
 
-    subgraph "Backend Core (FastAPI)"
-        API[API Gateway]
+    subgraph "Backend Core (Render.com)"
+        API[API Gateway (FastAPI)]
         CV[🧠 OpenCV Image Processing]
         AI[🤖 AI Change Detection]
         DB[(Registry Database)]
     end
 
     subgraph "Interfaces"
-        DASH[💻 Admin Dashboard (React)]
+        DASH[💻 Admin Dashboard (React/Netlify)]
         REP[📄 PDF Report Generator]
-        ALERT[🔔 Real-time Alerts]
+        MOB[📱 Mobile Field App (Android)]
+        PUB[📢 Public Reporting Portal]
     end
 
     SAT --> API
     REG --> API
-    MOB -->|Field Verification| API
+    CIT --> API
     
     API --> CV
     CV --> AI
@@ -45,8 +47,9 @@ graph TD
     
     DB --> DASH
     DB --> REP
-    DB --> ALERT
-    ALERT --> MOB
+    DB --> MOB
+    DASH <--> MOB
+    MOB -->|Field Verification| API
 ```
 
 ---
@@ -64,9 +67,14 @@ graph TD
 *   **Audit Reports**: One-click generation of PDF compliance reports for legal notices.
 
 ### 3. **Mobile Sentinel (Android App)**
-*   **Live Alerts**: Field officers receive push notifications for high-priority violations.
-*   **Ground Truthing**: Officers can verify "Red Flagged" plots on-site and upload photos/status updates.
-*   **Offline Mode**: Works in remote areas and syncs when connectivity is restored.
+*   **Live Notifications**: Field officers receive **Real-time Push Notifications** for high-priority violations (Severity > 70%).
+*   **Ground Truthing**: Officers verify "Red Flagged" plots on-site.
+*   **Cloud Sync**: Connected to live Render backend for up-to-the-minute data.
+
+### 4. **Citizen Watch Portal (New!)**
+*   **Public Reporting**: Citizens can pin GPS locations and upload photos of potential encroachments.
+*   **Transparency**: View recent reports on a public map.
+*   **Vigilance**: Crowdsourced data feeds directly into the Admin Dashboard.
 
 ---
 
@@ -74,12 +82,11 @@ graph TD
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Backend** | **Python (FastAPI)** | High-performance async API, Image Processing orchestration. |
+| **Backend** | **Python (FastAPI)** | Hosted on **Render.com**. Handles AI logic & Image Processing. |
 | **AI / ML** | **OpenCV, Shapely, NumPy** | Computer Vision for edge detection and geospatial geometry. |
-| **Frontend** | **React.js + Vite** | Responsive Admin Dashboard with `react-leaflet` maps. |
-| **Mobile** | **Kotlin (Android)** | Native Android app with Retrofit for API sync. |
-| **Cloud** | **Render + Vercel** | Scalable deployment (Backend on Render, Frontend on Vercel). |
-| **Tunneling**| **Ngrok** | Secure development tunneling for local-to-cloud testing. |
+| **Frontend** | **React.js + Vite** | Hosted on **Netlify/Vercel**. Admin Dashboard & Citizen Portal. |
+| **Mobile** | **Kotlin (Android)** | Native Android app with Retrofit & Notification Services. |
+| **Database** | **JSON/File System** | Persistent storage on Render disk (MVP). |
 
 ---
 
@@ -87,49 +94,49 @@ graph TD
 
 ```bash
 📦 CSIDC-Land-Sentinel
- ┣ 📂 backend            # Python FastAPI Core
+ ┣ 📂 backend            # Python FastAPI Core (Render)
  ┃ ┣ 📜 main.py          # API Entry Point
  ┃ ┣ 📜 image_processing.py # AI & OpenCV Logic
- ┃ ┣ 📜 demo_data.py     # Mock Data for MVP
+ ┃ ┣ 📜 citizen_routes.py # Public Reporting API
+ ┃ ┣ 📜 Procfile         # Render Ecosystem Config
  ┃ ┗ 📜 requirements.txt # Python Dependencies
- ┣ 📂 frontend           # React Dashboard
- ┃ ┣ 📂 src/components   # UI Components (Dashboard, Maps, etc.)
- ┃ ┣ 📜 config.js        # API Connection Config
+ ┣ 📂 frontend           # React Dashboard (Netlify/Vercel)
+ ┃ ┣ 📂 src/components   # Dashboard, Maps, Citizen Watch
+ ┃ ┣ 📜 config.js        # API Connection Config (Env Vars)
  ┃ ┗ 📜 vercel.json      # Cloud Routing
  ┣ 📂 mobile             # Android App Source
  ┃ ┗ 📂 app              # Kotlin Source Code
- ┗ 📜 render.yaml        # Backend Cloud Config
+ ┗ 📜 DEPLOYMENT_GUIDE.md # Full Cloud Setup Instructions
 ```
 
 ---
 
 ## ⚡ Deployment & Setup
 
-### 1. Backend (Python/FastAPI)
-```bash
-cd backend
-pip install -r requirements.txt
-python -m uvicorn main:app --reload
-# Running on: http://localhost:8000
-```
+### ☁️ Cloud Deployment (Live)
+*   **Backend**: Deployed on **Render.com** (Web Service, Python 3.10).
+    *   *Start Command*: `cd backend && gunicorn main:app -k uvicorn.workers.UvicornWorker`
+*   **Frontend**: Deployed on **Netlify / Vercel**.
+    *   *Env Var*: `VITE_API_BASE_URL` = `https://your-render-backend.onrender.com`
 
-### 2. Frontend (React)
-```bash
-cd frontend
-npm install
-npm run dev
-# Running on: http://localhost:5173
-```
+### 💻 Local Development
+1.  **Backend**:
+    ```bash
+    cd backend
+    pip install -r requirements.txt
+    python -m uvicorn main:app --reload
+    ```
+2.  **Frontend**:
+    ```bash
+    cd frontend
+    npm install
+    npm run dev
+    ```
 
-### 3. Mobile App (Android)
+### 📱 Mobile App
 *   Open `mobile/` in **Android Studio**.
-*   Sync Gradle.
-*   Run on Emulator or Device.
-
-### ☁️ Cloud Deployment
-*   **Backend**: Deployed on **Render.com**.
-*   **Frontend**: Deployed on **Vercel**.
-*   **Connectivity**: Frontend connects to Render via `config.js`.
+*   **Sync Gradle** & Run on Device.
+*   *Note: Notifications require Android 13+ permission approval.*
 
 ---
 
@@ -137,10 +144,10 @@ npm run dev
 
 *(Placeholders - Add your actual screenshots here)*
 
-| **Dashboard Analysis** | **Mobile Alerts** |
-| :---: | :---: |
-| ![Dashboard](https://via.placeholder.com/400x200?text=Dashboard+Screenshot) | ![Mobile](https://via.placeholder.com/200x400?text=App+Screenshot) |
-| *Real-time satellite analysis & compliance scoring* | *Field officer notifications & verification* |
+| **Dashboard Analysis** | **Mobile Notifications** | **Citizen Portal** |
+| :---: | :---: | :---: |
+| ![Dashboard](https://via.placeholder.com/300x200?text=Dashboard) | ![Mobile](https://via.placeholder.com/150x300?text=App+Alert) | ![Citizen](https://via.placeholder.com/300x200?text=Public+Report) |
+| *Satellite Analysis* | *Real-time Alerts* | *Public Reporting* |
 
 ---
 

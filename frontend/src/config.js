@@ -6,9 +6,10 @@
 
 const IS_PROD = import.meta.env.PROD;
 
-export const API_BASE_URL = IS_PROD
-    ? "REPLACE_WITH_YOUR_NGROK_URL" // User must update this before deploy
-    : ""; // Empty string means use relative path (proxy)
+// Priority: 1. Environment Variable (Netlify/Vercel) -> 2. Hardcoded Fallback -> 3. Proxy (Local)
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (IS_PROD
+    ? "https://your-render-backend.onrender.com" // Update this if Env Var is not set
+    : "");
 
 export const getApiUrl = (endpoint) => {
     // Determine if endpoint starts with /

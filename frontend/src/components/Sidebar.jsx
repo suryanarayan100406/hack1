@@ -34,8 +34,8 @@ function Sidebar({ activePage, onNavigate, onLogout }) {
             <div className="sidebar-footer">
                 <div
                     className="nav-item"
-                    onClick={() => onLogout && onLogout()}
-                    style={{ marginBottom: 12, color: '#ef4444', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 12, cursor: onLogout ? 'pointer' : 'default', opacity: onLogout ? 1 : 0.5 }}
+                    onClick={onLogout}
+                    style={{ marginBottom: 12, color: '#ef4444', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 12 }}
                 >
                     <span className="nav-icon">🚪</span>
                     <span>Logout</span>

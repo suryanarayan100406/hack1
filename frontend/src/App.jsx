@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Login from './components/Login'
 import Sidebar from './components/Sidebar'
 import Dashboard from './components/Dashboard'
 import MapView from './components/MapView'
@@ -11,7 +12,28 @@ import APIPortal from './components/APIPortal'
 import CitizenWatch from './components/CitizenWatch'
 
 function App() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [activePage, setActivePage] = useState('dashboard')
+
+    useEffect(() => {
+        const auth = localStorage.getItem('auth')
+        if (auth === 'true') setIsAuthenticated(true)
+    }, [])
+
+    const handleLogin = () => {
+        localStorage.setItem('auth', 'true')
+        setIsAuthenticated(true)
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem('auth')
+        setIsAuthenticated(false)
+        setActivePage('dashboard')
+    }
+
+    if (!isAuthenticated) {
+        return <Login onLogin={handleLogin} />
+    }
 
     const renderPage = () => {
         switch (activePage) {
@@ -30,7 +52,7 @@ function App() {
 
     return (
         <div className="app-layout">
-            <Sidebar activePage={activePage} onNavigate={setActivePage} />
+            <Sidebar activePage={activePage} onNavigate={setActivePage} onLogout={handleLogout} />
             <div className="main-content">
                 <div className="page-content">
                     {renderPage()}

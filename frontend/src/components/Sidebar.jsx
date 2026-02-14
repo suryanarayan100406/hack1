@@ -7,6 +7,7 @@ const navItems = [
     { id: 'alerts', label: 'Alerts', icon: '🔔' },
     { id: 'api', label: 'Developer API', icon: '🔌' },
     { id: 'admin', label: 'Admin Panel', icon: '🛠️' },
+    { id: 'citizen', label: 'Citizen Watch', icon: '👁️' },
 ]
 
 function Sidebar({ activePage, onNavigate }) {

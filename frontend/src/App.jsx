@@ -8,6 +8,7 @@ import Reports from './components/Reports'
 import Alerts from './components/Alerts'
 import AdminPanel from './components/AdminPanel'
 import APIPortal from './components/APIPortal'
+import CitizenWatch from './components/CitizenWatch'
 
 function App() {
     const [activePage, setActivePage] = useState('dashboard')
@@ -22,6 +23,7 @@ function App() {
             case 'alerts': return <Alerts />
             case 'admin': return <AdminPanel onNavigate={setActivePage} />
             case 'api': return <APIPortal />
+            case 'citizen': return <CitizenWatch />
             default: return <Dashboard onNavigate={setActivePage} />
         }
     }

@@ -21,7 +21,7 @@ function Upload({ onNavigate }) {
 
     // Load Registry on Mount
     useEffect(() => {
-        fetch(getApiUrl('/api/official-layouts'))
+        fetch(getApiUrl('/api/registry'))
             .then(res => res.json())
             .then(data => {
                 console.log("Registry Data:", data)
@@ -171,23 +171,54 @@ function Upload({ onNavigate }) {
                             <h3>Official Land Record</h3>
                             <p style={{ marginBottom: 16 }}>Select a plot from the CSIDC database</p>
 
-                            <select
-                                className="form-input"
-                                value={selectedPlotId}
-                                onChange={(e) => setSelectedPlotId(e.target.value)}
-                                style={{ width: '100%' }}
-                            >
-                                <option value="" disabled>-- Select Industrial Area --</option>
+                            <div className="registry-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, maxHeight: 400, overflowY: 'auto', padding: 4 }}>
                                 {layouts.map(l => (
-                                    <option key={l.id} value={l.id}>
-                                        {l.id} - {l.name}
-                                    </option>
+                                    <div
+                                        key={l.id}
+                                        onClick={() => setSelectedPlotId(l.id)}
+                                        className={`registry-card ${selectedPlotId === l.id ? 'selected' : ''}`}
+                                        style={{
+                                            padding: 8,
+                                            borderRadius: 8,
+                                            border: selectedPlotId === l.id ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.1)',
+                                            background: selectedPlotId === l.id ? 'rgba(59, 130, 246, 0.2)' : 'rgba(30, 41, 59, 0.6)',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        <div style={{
+                                            height: 80,
+                                            marginBottom: 8,
+                                            borderRadius: 4,
+                                            overflow: 'hidden',
+                                            background: '#000',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            {l.thumbnail ? (
+                                                <img
+                                                    src={getApiUrl(l.thumbnail)}
+                                                    alt={l.name}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onError={(e) => { e.target.onerror = null; e.target.style.display = 'none' }}
+                                                />
+                                            ) : (
+                                                <span style={{ fontSize: 24 }}>🗺️</span>
+                                            )}
+                                        </div>
+                                        <div style={{ fontSize: 12, fontWeight: 600, color: '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            {l.name}
+                                        </div>
+                                    </div>
                                 ))}
-                            </select>
+                            </div>
 
                             {selectedPlotId && (
-                                <div style={{ marginTop: 12, fontSize: 13, color: '#22c55e', background: 'rgba(34, 197, 94, 0.1)', padding: 8, borderRadius: 4 }}>
-                                    ✅ Record Found: {layouts.find(l => l.id === selectedPlotId)?.approved_area_sqm.toLocaleString()} sqm
+                                <div style={{ marginTop: 12, fontSize: 13, color: '#60a5fa', background: 'rgba(59, 130, 246, 0.1)', padding: 8, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 8 }}>
+                                    <span>✅ Selected: </span>
+                                    <span style={{ fontWeight: 700 }}>{layouts.find(l => l.id === selectedPlotId)?.name}</span>
                                 </div>
                             )}
                         </div>

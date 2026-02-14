@@ -28,21 +28,44 @@ DEFAULT_BOUNDS = {
 def analyze_land_compliance(
     layout_path: str, 
     satellite_path: str, 
-    bounds: Dict = DEFAULT_BOUNDS
+    bounds: Dict = DEFAULT_BOUNDS,
+    reference_geometry = None
 ) -> Dict[str, Any]:
     """
     Run the full Phase 1-6 analysis pipeline.
     """
     
     # 1. Raster -> Vector (Layout)
-    # Returns normalized polygon (0-1)
-    layout_area_px, normalized_poly, _ = process_layout_map(layout_path)
-    
-    if not normalized_poly:
-        # Fallback: Use full image as boundary
-        print("DEBUG: Layout vectorization failed. Using full image as boundary.")
-        normalized_poly = [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]
-        layout_area_px = 0 # Will be recalculated properly later or mocked
+    if reference_geometry:
+        # Use provided geometry (Shapely)
+        # Normalize coords to 0-1 based on its own bounds (Fit to Screen)
+        minx, miny, maxx, maxy = reference_geometry.bounds
+        w_geo, h_geo = maxx - minx, maxy - miny
+        
+        normalized_poly = []
+        
+        def normalize_coords(coords):
+            return [((x - minx)/w_geo, (y - miny)/h_geo) for x, y in coords]
+
+        if reference_geometry.geom_type == 'Polygon':
+            normalized_poly = normalize_coords(reference_geometry.exterior.coords)
+        elif reference_geometry.geom_type == 'MultiPolygon':
+            # Take convex hull or largest poly for main boundary visualization
+            # Ideally support MultiPolygon in downstream, but for now take convex hull exterior
+            normalized_poly = normalize_coords(reference_geometry.convex_hull.exterior.coords)
+            
+        layout_area_px = 0 # Ignored
+        print(f"DEBUG: Using Registry Geometry for {layout_path}")
+        
+    else:
+        # Returns normalized polygon (0-1)
+        layout_area_px, normalized_poly, _ = process_layout_map(layout_path)
+        
+        if not normalized_poly:
+            # Fallback: Use full image as boundary
+            print("DEBUG: Layout vectorization failed. Using full image as boundary.")
+            normalized_poly = [[0.0, 0.0], [1.0, 0.0], [1.0, 1.0], [0.0, 1.0]]
+            layout_area_px = 0 # Will be recalculated properly later or mocked
 
     # Load Satellite Image to get dimensions
     sat_img = cv2.imread(satellite_path)

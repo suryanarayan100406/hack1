@@ -1,0 +1,10 @@
+Total features found: 33
+
+Feature ID Prefixes:
+  cg_district_boundary: 33
+
+--- Sample Features (One per prefix) ---
+
+[Index 0] ID: cg_district_boundary.1 | Geom: MultiPolygon
+  Properties Keys: ['dist_h', 'dist_e', 'div_cod', 'sta_cod', 'dist_cod']
+  Sample Props: {'dist_h': 'cLrj', 'dist_e': 'Bastar', 'div_cod': '5', 'sta_cod': '22', 'dist_cod': '374'}

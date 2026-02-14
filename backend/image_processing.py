@@ -14,6 +14,7 @@ import shutil
 
 # Import New GIS Engine
 from analysis import analyze_land_compliance
+from utils import registry_utils
 
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
 RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")
@@ -41,14 +42,14 @@ def get_official_layouts():
             return json.load(f)
     return []
 
-def detect_changes(ref_path: str, sat_path: str, project_id: str) -> dict:
+def detect_changes(ref_path: str, sat_path: str, project_id: str, reference_geometry=None) -> dict:
     """
     Orchestrates the new GIS-based Analysis Pipeline via analysis.py
     and maps the output to the legacy frontend format.
     """
     try:
         # 1. Run the new GIS Logic
-        raw_results = analyze_land_compliance(ref_path, sat_path)
+        raw_results = analyze_land_compliance(ref_path, sat_path, reference_geometry=reference_geometry)
         
         if "error" in raw_results:
             return {"error": raw_results["error"]}
@@ -209,7 +210,11 @@ def run_analysis(project_id):
         
     else:
         # Normal AI Processing
-        results = detect_changes(project["reference_image"], project["satellite_image"], project_id)
+        reference_geometry = None
+        if project.get("plot_id"):
+            reference_geometry = registry_utils.get_registry_geometry(project["plot_id"])
+            
+        results = detect_changes(project["reference_image"], project["satellite_image"], project_id, reference_geometry)
     
     project["status"] = "analyzed"
     project["results"] = results

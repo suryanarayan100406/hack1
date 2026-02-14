@@ -14,6 +14,7 @@ from demo_data import (
     get_dashboard_stats,
     get_plots_geojson,
 )
+from utils import registry_utils
 from datetime import datetime
 import demo_data
 
@@ -101,6 +102,19 @@ async def get_stats():
 async def get_layouts():
     """List official layouts from registry."""
     return get_official_layouts()
+
+@router.get("/registry")
+async def get_registry():
+    """Returns the list of available registry items."""
+    return registry_utils.get_registry_index()
+
+@router.get("/registry/thumbnails/{filename}")
+async def get_registry_thumbnail(filename: str):
+    """Serves the static thumbnail images."""
+    file_path = os.path.join("registry", "thumbnails", filename)
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    return {"error": "Thumbnail not found"}
 
 
 # ── Image Analysis Endpoints ─────────────────────────────────────

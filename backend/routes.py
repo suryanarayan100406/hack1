@@ -108,6 +108,11 @@ async def get_registry():
     """Returns the list of available registry items."""
     return registry_utils.get_registry_index()
 
+@router.get("/registry/geojson")
+async def get_registry_geojson():
+    """Returns the registry data as GeoJSON for map display."""
+    return registry_utils.get_registry_geojson()
+
 @router.get("/registry/thumbnails/{filename}")
 async def get_registry_thumbnail(filename: str):
     """Serves the static thumbnail images."""

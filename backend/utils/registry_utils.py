@@ -31,3 +31,16 @@ def get_registry_geometry(item_id):
         print(f"Error fetching registry geometry: {e}")
         return None
     return None
+
+def get_registry_geojson():
+    """
+    Returns the full registry dump as a GeoJSON FeatureCollection.
+    Used for frontend map visualization.
+    """
+    if os.path.exists(DUMP_FILE):
+        try:
+            with open(DUMP_FILE, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error reading dump file: {e}")
+    return {"type": "FeatureCollection", "features": []}

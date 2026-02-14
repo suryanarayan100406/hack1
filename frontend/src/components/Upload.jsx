@@ -39,6 +39,16 @@ function Upload({ onNavigate }) {
             })
     }, [])
 
+    useEffect(() => {
+        const preSelected = localStorage.getItem('selected_registry_id')
+        if (preSelected) {
+            console.log("Found pre-selected plot:", preSelected)
+            setSelectedPlotId(preSelected)
+            setUploadMode('registry')
+            localStorage.removeItem('selected_registry_id')
+        }
+    }, [layouts]) // Run when layouts loads to ensure ID exists? Actually ID set is independent.
+
     const handleFile = (file, type) => {
         if (!file) return
         const reader = new FileReader()

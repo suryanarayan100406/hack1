@@ -36,10 +36,13 @@ def analyze_land_compliance(
     """
     
     # 1. Raster -> Vector (Layout)
-    if reference_geometry:
+    if reference_geometry and not reference_geometry.is_empty:
         # Use provided geometry (Shapely)
         # Normalize coords to 0-1 based on its own bounds (Fit to Screen)
         minx, miny, maxx, maxy = reference_geometry.bounds
+        if any(np.isnan([minx, miny, maxx, maxy])):
+             return {"error": "Invalid Registry Geometry (Bounds are NaN)"}
+             
         w_geo, h_geo = maxx - minx, maxy - miny
         
         normalized_poly = []

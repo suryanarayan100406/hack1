@@ -8,6 +8,7 @@
       "lon": 81.87192238534627
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.1.png",
+    "image_path": "thumbnails/cg_district_boundary.1.png",
     "property_count": 5
   },
   {
@@ -19,6 +20,7 @@
       "lon": 82.11596292347973
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.2.png",
+    "image_path": "thumbnails/cg_district_boundary.2.png",
     "property_count": 5
   },
   {
@@ -30,6 +32,7 @@
       "lon": 81.38932671119039
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.3.png",
+    "image_path": "thumbnails/cg_district_boundary.3.png",
     "property_count": 5
   },
   {
@@ -41,6 +44,7 @@
       "lon": 81.80927497528003
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.4.png",
+    "image_path": "thumbnails/cg_district_boundary.4.png",
     "property_count": 5
   },
   {
@@ -52,6 +56,7 @@
       "lon": 81.3832324588336
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.5.png",
+    "image_path": "thumbnails/cg_district_boundary.5.png",
     "property_count": 5
   },
   {
@@ -63,6 +68,7 @@
       "lon": 82.56128539941108
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.6.png",
+    "image_path": "thumbnails/cg_district_boundary.6.png",
     "property_count": 5
   },
   {
@@ -74,6 +80,7 @@
       "lon": 83.86275718794113
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.7.png",
+    "image_path": "thumbnails/cg_district_boundary.7.png",
     "property_count": 5
   },
   {
@@ -85,6 +92,7 @@
       "lon": 81.12227884294734
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.8.png",
+    "image_path": "thumbnails/cg_district_boundary.8.png",
     "property_count": 5
   },
   {
@@ -96,6 +104,7 @@
       "lon": 81.22213193678004
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.9.png",
+    "image_path": "thumbnails/cg_district_boundary.9.png",
     "property_count": 5
   },
   {
@@ -107,6 +116,7 @@
       "lon": 82.60859473569735
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.10.png",
+    "image_path": "thumbnails/cg_district_boundary.10.png",
     "property_count": 5
   },
   {
@@ -118,6 +128,7 @@
       "lon": 82.49573402293639
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.11.png",
+    "image_path": "thumbnails/cg_district_boundary.11.png",
     "property_count": 5
   },
   {
@@ -129,6 +140,7 @@
       "lon": 82.60822900104911
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.12.png",
+    "image_path": "thumbnails/cg_district_boundary.12.png",
     "property_count": 5
   },
   {
@@ -140,6 +152,7 @@
       "lon": 83.33686495151495
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.13.png",
+    "image_path": "thumbnails/cg_district_boundary.13.png",
     "property_count": 5
   },
   {
@@ -151,6 +164,7 @@
       "lon": 81.82023009478111
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.14.png",
+    "image_path": "thumbnails/cg_district_boundary.14.png",
     "property_count": 5
   },
   {
@@ -162,6 +176,7 @@
       "lon": 80.817365093295
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.15.png",
+    "image_path": "thumbnails/cg_district_boundary.15.png",
     "property_count": 5
   },
   {
@@ -173,6 +188,7 @@
       "lon": 83.22754131507702
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.16.png",
+    "image_path": "thumbnails/cg_district_boundary.16.png",
     "property_count": 5
   },
   {
@@ -184,6 +200,7 @@
       "lon": 80.78374561174786
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.17.png",
+    "image_path": "thumbnails/cg_district_boundary.17.png",
     "property_count": 5
   },
   {
@@ -195,6 +212,7 @@
       "lon": 81.0780842644439
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.18.png",
+    "image_path": "thumbnails/cg_district_boundary.18.png",
     "property_count": 5
   },
   {
@@ -206,6 +224,7 @@
       "lon": 81.38898564521023
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.19.png",
+    "image_path": "thumbnails/cg_district_boundary.19.png",
     "property_count": 5
   },
   {
@@ -217,6 +236,7 @@
       "lon": 81.66453240141536
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.20.png",
+    "image_path": "thumbnails/cg_district_boundary.20.png",
     "property_count": 5
   },
   {
@@ -228,6 +248,7 @@
       "lon": 82.24503953064604
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.21.png",
+    "image_path": "thumbnails/cg_district_boundary.21.png",
     "property_count": 5
   },
   {
@@ -239,6 +260,7 @@
       "lon": 82.23537558206641
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.22.png",
+    "image_path": "thumbnails/cg_district_boundary.22.png",
     "property_count": 5
   },
   {
@@ -250,6 +272,7 @@
       "lon": 81.18969779949848
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.23.png",
+    "image_path": "thumbnails/cg_district_boundary.23.png",
     "property_count": 5
   },
   {
@@ -261,6 +284,7 @@
       "lon": 81.72991977027593
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.24.png",
+    "image_path": "thumbnails/cg_district_boundary.24.png",
     "property_count": 5
   },
   {
@@ -272,6 +296,7 @@
       "lon": 82.88270557320838
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.25.png",
+    "image_path": "thumbnails/cg_district_boundary.25.png",
     "property_count": 5
   },
   {
@@ -283,6 +308,7 @@
       "lon": 83.50068484904392
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.26.png",
+    "image_path": "thumbnails/cg_district_boundary.26.png",
     "property_count": 5
   },
   {
@@ -294,6 +320,7 @@
       "lon": 81.52424447047326
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.27.png",
+    "image_path": "thumbnails/cg_district_boundary.27.png",
     "property_count": 5
   },
   {
@@ -305,6 +332,7 @@
       "lon": 81.99837055622504
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.28.png",
+    "image_path": "thumbnails/cg_district_boundary.28.png",
     "property_count": 5
   },
   {
@@ -316,6 +344,7 @@
       "lon": 80.93842863791954
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.29.png",
+    "image_path": "thumbnails/cg_district_boundary.29.png",
     "property_count": 5
   },
   {
@@ -327,6 +356,7 @@
       "lon": 82.07822261158985
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.30.png",
+    "image_path": "thumbnails/cg_district_boundary.30.png",
     "property_count": 5
   },
   {
@@ -338,6 +368,7 @@
       "lon": 80.71296869587557
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.31.png",
+    "image_path": "thumbnails/cg_district_boundary.31.png",
     "property_count": 5
   },
   {
@@ -349,6 +380,7 @@
       "lon": 82.97313831329518
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.32.png",
+    "image_path": "thumbnails/cg_district_boundary.32.png",
     "property_count": 5
   },
   {
@@ -360,6 +392,7 @@
       "lon": 83.05724944799042
     },
     "thumbnail": "/api/registry/thumbnails/cg_district_boundary.33.png",
+    "image_path": "thumbnails/cg_district_boundary.33.png",
     "property_count": 5
   }
 ]

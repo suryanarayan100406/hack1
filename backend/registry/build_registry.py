@@ -166,6 +166,7 @@ def build_registry():
             "type": "District",
             "centroid": {"lat": centroid.y, "lon": centroid.x},
             "thumbnail": f"/api/registry/thumbnails/{thumb_filename}",
+            "image_path": f"thumbnails/{thumb_filename}",
             "property_count": len(props)
         }
         registry.append(entry)

@@ -15,10 +15,25 @@ function Dashboard({ onNavigate }) {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch(getApiUrl('/api/demo-data'))
-            .then(res => res.json())
-            .then(d => { setData(d); setLoading(false) })
-            .catch(() => setLoading(false))
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
+
+        fetch(getApiUrl('/api/demo-data'), { signal: controller.signal })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+                return res.json()
+            })
+            .then(d => {
+                setData(d)
+                setLoading(false)
+                clearTimeout(timeoutId)
+            })
+            .catch(err => {
+                console.error("Dashboard fetch error:", err)
+                setLoading(false)
+            })
+
+        return () => clearTimeout(timeoutId)
     }, [])
 
     if (loading) return <div className="spinner"></div>

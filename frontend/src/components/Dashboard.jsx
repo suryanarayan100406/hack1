@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
-import MapView from './MapView'
+// import MapView from './MapView'
 
 const COLORS = {
     compliant: '#10b981',
@@ -103,7 +103,7 @@ function Dashboard({ onNavigate }) {
             </div>
 
             {/* Interactive Map */}
-            <div className="chart-card animate-in animate-in-delay-2" style={{ marginTop: 24, marginBottom: 24 }}>
+            {/* <div className="chart-card animate-in animate-in-delay-2" style={{ marginTop: 24, marginBottom: 24 }}>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>🗺️ Industrial Districts Map</span>
                     <span style={{ fontSize: 13, fontWeight: 400, color: '#94a3b8' }}>Click a district to analyze</span>
@@ -111,7 +111,7 @@ function Dashboard({ onNavigate }) {
                 <div style={{ height: 400, marginTop: 16 }}>
                     <MapView onSelectDistrict={handleDistrictSelect} />
                 </div>
-            </div>
+            </div> */}
 
             {/* Charts Row */}
             <div className="dashboard-grid">

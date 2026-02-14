@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import MapView from './MapView'
 
@@ -59,15 +59,16 @@ function Dashboard({ onNavigate }) {
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
         .slice(0, 5)
 
-    const handleDistrictSelect = (id) => {
+    const handleDistrictSelect = useCallback((id) => {
         // We need to pass the selected ID to the upload page
         // Since onNavigate just switches tabs, we might need a way to pass params
         // For now, we'll store it in localStorage or use a global context if available.
         // Or simpler: The Upload component can check URL params or a simple prop if we could pass it.
         // Assuming onNavigate just takes a string.
+        console.log("District selected:", id)
         localStorage.setItem('selected_registry_id', id);
         onNavigate('upload');
-    }
+    }, [onNavigate])
 
     return (
         <div>

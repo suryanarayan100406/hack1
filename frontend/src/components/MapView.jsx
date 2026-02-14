@@ -79,7 +79,12 @@ function MapView({ onSelectDistrict }) {
     // Expose select function globally for popup button
     useEffect(() => {
         window.districtSelect = (id) => {
-            if (onSelectDistrict) onSelectDistrict(id)
+            console.log("Global districtSelect called with:", id)
+            if (onSelectDistrict) {
+                onSelectDistrict(id)
+            } else {
+                console.error("onSelectDistrict prop is missing")
+            }
         }
         return () => {
             delete window.districtSelect

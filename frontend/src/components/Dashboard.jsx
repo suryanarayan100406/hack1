@@ -82,7 +82,7 @@ function Dashboard({ onNavigate }) {
 
             {/* KPI Cards */}
             <div className="kpi-grid" style={{ marginTop: 24 }}>
-                <div className="kpi-card primary animate-in animate-in-delay-1">
+                <div className="kpi-card primary">
                     <div className="kpi-header">
                         <span className="kpi-label">Total Plots</span>
                         <span className="kpi-icon">🏭</span>
@@ -91,7 +91,7 @@ function Dashboard({ onNavigate }) {
                     <div className="kpi-sub">Across {areas.length} industrial areas</div>
                 </div>
 
-                <div className="kpi-card success animate-in animate-in-delay-2">
+                <div className="kpi-card success">
                     <div className="kpi-header">
                         <span className="kpi-label">Compliant</span>
                         <span className="kpi-icon">✅</span>
@@ -100,7 +100,7 @@ function Dashboard({ onNavigate }) {
                     <div className="kpi-sub">{((stats.compliant / stats.total_plots) * 100).toFixed(0)}% of total plots</div>
                 </div>
 
-                <div className="kpi-card danger animate-in animate-in-delay-3">
+                <div className="kpi-card danger">
                     <div className="kpi-header">
                         <span className="kpi-label">Violations</span>
                         <span className="kpi-icon">🚨</span>
@@ -109,7 +109,7 @@ function Dashboard({ onNavigate }) {
                     <div className="kpi-sub">{stats.pending_alerts} pending alerts</div>
                 </div>
 
-                <div className="kpi-card warning animate-in animate-in-delay-4">
+                <div className="kpi-card warning">
                     <div className="kpi-header">
                         <span className="kpi-label">Avg Compliance</span>
                         <span className="kpi-icon">📈</span>
@@ -121,8 +121,8 @@ function Dashboard({ onNavigate }) {
                 </div>
             </div>
 
-            {/* Interactive Map */}
-            <div className="chart-card animate-in animate-in-delay-2" style={{ marginTop: 24, marginBottom: 24 }}>
+            {/* Interactive Map - TEMPORARILY DISABLED FOR DEBUGGING
+            <div className="chart-card" style={{ marginTop: 24, marginBottom: 24 }}>
                 <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>🗺️ Industrial Districts Map</span>
                     <span style={{ fontSize: 13, fontWeight: 400, color: '#94a3b8' }}>Click a district to analyze</span>
@@ -131,10 +131,11 @@ function Dashboard({ onNavigate }) {
                     <MapView onSelectDistrict={handleDistrictSelect} />
                 </div>
             </div>
+            */}
 
             {/* Charts Row */}
             <div className="dashboard-grid">
-                <div className="chart-card animate-in">
+                <div className="chart-card">
                     <h3>📊 Area-wise Compliance</h3>
                     <ResponsiveContainer width="100%" height={280}>
                         <BarChart data={areaChartData}>
@@ -157,7 +158,7 @@ function Dashboard({ onNavigate }) {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="chart-card animate-in">
+                <div className="chart-card">
                     <h3>🎯 Status Distribution</h3>
                     <ResponsiveContainer width="100%" height={280}>
                         <PieChart>

@@ -8,13 +8,17 @@ import { getApiUrl } from '../config'
 import icon from 'leaflet/dist/images/marker-icon.png'
 import iconShadow from 'leaflet/dist/images/marker-shadow.png'
 
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+try {
+    let DefaultIcon = L.icon({
+        iconUrl: icon,
+        shadowUrl: iconShadow,
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+    });
+    L.Marker.prototype.options.icon = DefaultIcon;
+} catch (e) {
+    console.warn("Leaflet icon fix failed:", e)
+}
 
 function MapView({ onSelectDistrict }) {
     const [geoJsonData, setGeoJsonData] = useState(null)
@@ -24,7 +28,11 @@ function MapView({ onSelectDistrict }) {
         fetch(getApiUrl('/api/registry/geojson'))
             .then(res => res.json())
             .then(data => {
-                setGeoJsonData(data)
+                if (data && data.features && Array.isArray(data.features)) {
+                    setGeoJsonData(data)
+                } else {
+                    console.error("Invalid GeoJSON data:", data)
+                }
                 setLoading(false)
             })
             .catch(err => {

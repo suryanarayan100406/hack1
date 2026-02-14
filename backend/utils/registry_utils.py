@@ -36,7 +36,18 @@ def get_registry_geojson():
     """
     Returns the full registry dump as a GeoJSON FeatureCollection.
     Used for frontend map visualization.
+    Prioritizes optimized file if available.
     """
+    # Check for optimized file first
+    optimized_path = os.path.join(REGISTRY_DIR, "optimized_dump.json")
+    if os.path.exists(optimized_path):
+        try:
+            with open(optimized_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error reading optimized dump file: {e}")
+
+    # Fallback to original
     if os.path.exists(DUMP_FILE):
         try:
             with open(DUMP_FILE, 'r') as f:
